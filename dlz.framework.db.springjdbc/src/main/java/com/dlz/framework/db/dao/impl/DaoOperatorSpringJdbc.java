@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 
+import com.dlz.framework.db.DbInfo;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.dao.IDaoOperator;
 import com.dlz.framework.db.jdbc.JdbcUtil;
@@ -44,13 +45,18 @@ public class DaoOperatorSpringJdbc implements IDaoOperator {
 
 	@Override
 	public long getSeq(String seqName) {
-		if(sequenceMaker!=null){
+		if (sequenceMaker != null) {
 			return sequenceMaker.nextVal(seqName);
 		}
-		seqName=seqName.toUpperCase();
-		String sql="select SEQ_"+seqName+".nextval from dual";
-		if(seqName.startsWith("S_")||seqName.startsWith("SEQ_")){
-			sql="select "+seqName+".nextval from dual";
+		seqName = seqName.toUpperCase();
+		String sql = "select SEQ_" + seqName + ".nextval from dual";
+
+		if ("postgresql".equalsIgnoreCase(DbInfo.getDbtype())) {
+			sql = "select nextval('"+seqName+"')";
+		} else {
+			if (seqName.startsWith("S_") || seqName.startsWith("SEQ_")) {
+				sql = "select " + seqName + ".nextval from dual";
+			}
 		}
 		return jdbcTemplate.queryForObject(sql, Long.class);
 	}
