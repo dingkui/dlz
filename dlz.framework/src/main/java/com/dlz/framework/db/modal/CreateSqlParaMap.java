@@ -2,6 +2,9 @@ package com.dlz.framework.db.modal;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dlz.framework.db.DbCoverUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.exception.DbException;
@@ -13,6 +16,7 @@ import com.dlz.framework.db.exception.DbException;
  */
 public class CreateSqlParaMap extends BaseParaMap{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+	private static Logger logger=LoggerFactory.getLogger(CreateSqlParaMap.class);
 	private static final long serialVersionUID = 8374167270612933157L;
 	protected static final String STR_TABLENAME="tableName";
 	protected static final String STR_WHERE="where";
@@ -46,9 +50,26 @@ public class CreateSqlParaMap extends BaseParaMap{
 		addPara(key, DbCoverUtil.getVal4Db(tableName,clumnName, value));
 		return this;
 	}
+	/**
+	 * 添加参数
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public boolean isClumnExists(String clumnName){
+		return DbCoverUtil.isClumnExists(tableName, clumnName);
+	}
 	public void addCondition(String paraName,String option,Object value){
 		if(value==null||"".equals(value)){
 			throw new DbException("addCondition 参数不能为空:table="+getPara().get(STR_TABLENAME)+",paraName="+paraName+",option="+option,1002);
+		}
+		
+		paraName = SqlUtil.converStr2ClumnStr(paraName);
+		String clumnName = paraName.replaceAll("`", "");
+		boolean isClumnExists = isClumnExists(clumnName);
+		if(!isClumnExists){
+			logger.warn("clumn is not exists:"+paraName);
+			return;
 		}
 		StringBuilder sbWhere = (StringBuilder)this.getPara().get(STR_WHERE);
 		if(sbWhere==null){
@@ -58,9 +79,8 @@ public class CreateSqlParaMap extends BaseParaMap{
 		if(sbWhere.toString().endsWith("2=3")){
 			sbWhere.replace(7, 10, "1=1");
 		}
-		String clumnName = SqlUtil.converStr2ClumnStr(paraName);
 		sbWhere.append(" and ");
-		sbWhere.append(clumnName);
+		sbWhere.append(paraName);
 		sbWhere.append(' ');
 		sbWhere.append(option.equals("eq")?"=":option);
 		sbWhere.append(' ');
@@ -88,8 +108,8 @@ public class CreateSqlParaMap extends BaseParaMap{
 			sbWhere.append(SqlUtil.getSqlInStr(value));
 			sbWhere.append(")");
 		}else if(option.matches("(?i)eq")||option.matches("=")){
-			sbWhere.append("#{").append(paraName).append("}");
-			addPara(paraName, value);
+			sbWhere.append("#{").append(clumnName).append("}");
+			addPara(clumnName, value);
 		}else{
 			sbWhere.append(value);
 		}

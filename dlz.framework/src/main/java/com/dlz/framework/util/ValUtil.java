@@ -163,7 +163,24 @@ public class ValUtil{
 			return DateUtil.parseDateTimeC(value);
 		} else if (value.matches("^\\d{4}-\\d{2}-\\d{2}")) {
 			return DateUtil.parseDate(value);
+		}else if (value.matches("^\\d{4}-\\d{1,2}$")) {
+			return DateUtil.parseData(value, "yyyy-MM");
+		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
+			return DateUtil.parseData(value, "yyyy-MM-dd");
+		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")) {
+			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm");
+		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
+			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm:ss");
+		} else if (value.matches("^\\d{1,2}:\\d{1,2}$")) {
+			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
+			String hole = nowYMD + " " + value;
+			return DateUtil.parseData(hole, "yyyy-MM-dd HH:mm");
+		} else if (value.matches("^\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
+			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
+			String hole = nowYMD + " " + value;
+			return DateUtil.parseData(hole, "yyyy-MM-dd HH:mm:ss");
 		}
+		
 		if(format==null){
 			return null;
 		}

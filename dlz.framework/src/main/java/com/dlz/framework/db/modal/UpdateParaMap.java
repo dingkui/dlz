@@ -2,6 +2,9 @@ package com.dlz.framework.db.modal;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dlz.framework.db.SqlUtil;
 
 
@@ -12,6 +15,7 @@ import com.dlz.framework.db.SqlUtil;
  */
 public class UpdateParaMap extends CreateSqlParaMap{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+	private static Logger logger=LoggerFactory.getLogger(UpdateParaMap.class);
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.updateTable";
 	private static final String STR_SETS="sets";
@@ -29,24 +33,31 @@ public class UpdateParaMap extends CreateSqlParaMap{
 			sbSets=new StringBuilder();
 			addPara(STR_SETS, sbSets);
 		}
+		
+		paraName = SqlUtil.converStr2ClumnStr(paraName);
+		String clumnName = paraName.replaceAll("`", "");
+		boolean isClumnExists = isClumnExists(clumnName);
+		if(!isClumnExists){
+			logger.warn("clumn is not exists:"+paraName);
+			return;
+		}
+		
 		if(sbSets.length()>0){
 			sbSets.append(",");
 		}
-		paraName = SqlUtil.converStr2ClumnStr(paraName);
 		sbSets.append(paraName);
-		paraName = paraName.replaceAll("`", "");
 		sbSets.append('=');
 		if(value instanceof String){
 			String v = ((String) value);
 			if(v.startsWith("sql:")){
 				sbSets.append(SqlUtil.converStr2ClumnStr(v.substring(4)));
 			}else{
-				sbSets.append("#{").append(paraName).append("}");
-				addClunmnValue(paraName, value);
+				sbSets.append("#{").append(clumnName).append("}");
+				addClunmnValue(clumnName, value);
 			}
 		}else{
-			sbSets.append("#{").append(paraName).append("}");
-			addClunmnValue(paraName, value);
+			sbSets.append("#{").append(clumnName).append("}");
+			addClunmnValue(clumnName, value);
 		}
 	}
 	/**

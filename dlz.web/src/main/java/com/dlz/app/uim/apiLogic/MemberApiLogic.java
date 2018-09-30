@@ -19,6 +19,7 @@ import com.dlz.framework.bean.JSONResult;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.util.StringUtils;
+import com.dlz.framework.util.config.ConfUtil;
 import com.dlz.framework.util.encry.Md5Util;
 import com.dlz.web.holder.ThreadHolder;
 import com.dlz.web.logic.AuthedCommLogic;
@@ -54,8 +55,10 @@ public class MemberApiLogic extends AuthedCommLogic{
 		if(StringUtils.isEmpty(userName)||StringUtils.isEmpty(password)){
 			return r.addErr("请输入用户名和密码");
 		}
-		if(!data.getStr("vcode","1").equals(ThreadHolder.getSessionAttr("valid_code"))){
-			return r.addErr("验证码有误");
+		if(ConfUtil.getBoolean("conf.sitefront.needVcode",true)){
+			if(!data.getStr("vcode","1").equals(ThreadHolder.getSessionAttr("valid_code"))){
+				return r.addErr("验证码有误");
+			}
 		}
 		ResultMap member = memberService.searchMap(new JSONMap("login_id",userName,"user_status",1));
 		if(member!=null){
