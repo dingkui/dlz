@@ -2,6 +2,9 @@ package com.dlz.framework.db.modal;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dlz.framework.db.SqlUtil;
 
 /**
@@ -11,6 +14,7 @@ import com.dlz.framework.db.SqlUtil;
  */
 public class InsertParaMap extends CreateSqlParaMap{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+	private static Logger logger=LoggerFactory.getLogger(InsertParaMap.class);
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.insertTable";
 	private static final String STR_COLUMS="colums";
@@ -19,6 +23,15 @@ public class InsertParaMap extends CreateSqlParaMap{
 		super(SQL,tableName,null);
 	}
 	public void addValue(String key,Object value){
+		String paraName = SqlUtil.converStr2ClumnStr(key);
+		String clumnName = paraName.replaceAll("`", "");
+		boolean isClumnExists = isClumnExists(clumnName);
+		if(!isClumnExists){
+			logger.warn("clumn is not exists:"+paraName);
+			return;
+		}
+		
+		
 		StringBuilder sbColums = (StringBuilder)this.getPara().get(STR_COLUMS);
 		StringBuilder sbValues = (StringBuilder)this.getPara().get(STR_VALUES);
 		if(sbColums==null){
@@ -31,9 +44,7 @@ public class InsertParaMap extends CreateSqlParaMap{
 			sbColums.append(',');
 			sbValues.append(',');
 		}
-		String clumnName = SqlUtil.converStr2ClumnStr(key);
-		sbColums.append(clumnName);
-		clumnName = clumnName.replaceAll("`", "");
+		sbColums.append(paraName);
 		if(value instanceof String){
 			String v = ((String) value);
 			if(v.startsWith("sql:")){

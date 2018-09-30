@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import com.dlz.framework.db.exception.DbException;
 import com.dlz.framework.db.service.IColumnMapperService;
-import com.dlz.framework.db.service.IParaCover;
 
 /**
  * 数据库配置信息
@@ -95,14 +94,6 @@ public class DbInfo {
 					SqlUtil.setMapper((IColumnMapperService)Class.forName(str).newInstance());
 				} catch (Exception e) {
 					throw new DbException("字段转换类型设置无效："+name+"="+str+"\n"+e.getMessage(),1002, e);
-				}
-				continue;
-			}
-			if(STR_PARACOVER.equals(name)){
-				try {
-					DbCoverUtil.paraCover=(IParaCover)Class.forName(str).newInstance();
-				} catch (Exception e) {
-					throw new DbException("数据库转换类型设置无效："+name+"="+str+"\n"+e.getMessage(),1002, e);
 				}
 				continue;
 			}

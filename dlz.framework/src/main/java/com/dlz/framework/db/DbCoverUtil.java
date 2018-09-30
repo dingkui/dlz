@@ -1,9 +1,10 @@
 package com.dlz.framework.db;
 
+import com.dlz.framework.db.cache.ATableCloumnCache;
 import com.dlz.framework.db.conver.Convert;
 import com.dlz.framework.db.exception.DbException;
 import com.dlz.framework.db.modal.ResultMap;
-import com.dlz.framework.db.service.IParaCover;
+import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.util.JacksonUtil;
 
 /**
@@ -15,12 +16,14 @@ import com.dlz.framework.util.JacksonUtil;
 public class DbCoverUtil {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	
-	static IParaCover paraCover=new IParaCover() {
-		@Override
-		public Object converObj4Db(String tableName,String clumnName,Object value) {
-			return value;
+	static ATableCloumnCache paraCover;
+	private static ATableCloumnCache getTableCloumnCache(){
+		if(paraCover!=null){
+			return paraCover;
 		}
-	};
+		paraCover=SpringHolder.getBean(ATableCloumnCache.class);
+		return paraCover;
+	}
 	/**
 	 * 把传入的参数转换成数据库识别的参数
 	 * 主要用于postgresql类似的强制类型
@@ -29,7 +32,17 @@ public class DbCoverUtil {
 	 * @return
 	 */
 	public static Object getVal4Db(String tableName,String clumnName,Object value) {
-		return paraCover.converObj4Db(tableName, clumnName, value);
+		return getTableCloumnCache().converObj4Db(tableName, clumnName, value);
+	}
+	/**
+	 * 判断字段是否存在
+	 * @param tableName
+	 * @param clumnName
+	 * @author dk 2018-09-28
+	 * @return
+	 */
+	public static boolean isClumnExists(String tableName,String clumnName) {
+		return getTableCloumnCache().isClumnExists(tableName, clumnName);
 	}
 	/**
 	 * 从Map里取得字符串
