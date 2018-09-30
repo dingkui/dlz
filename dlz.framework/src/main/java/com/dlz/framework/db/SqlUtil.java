@@ -90,11 +90,18 @@ public class SqlUtil{
 			StringBuffer sb = new StringBuffer();
 			int beginIndex=0;
 			Matcher mat = PATTERN_PREPARE.matcher(sql);
+			JSONMap paras=paraMap.getPara();
 			JSONMap para=getParaMap(paraMap);
+			para.put("para", paras);
 			while(mat.find()){
 		  		sb.append(sql.substring(beginIndex, mat.start()));
 		  		sb.append("?");
-		  		paraList.add(JacksonUtil.at(para, mat.group(1)));
+		  		String group = mat.group(1);
+		  		if(group.startsWith("para.")){
+		  			paraList.add(JacksonUtil.at(paras, group.substring(5)));
+		  		}else{
+		  			paraList.add(JacksonUtil.at(para, group));
+		  		}
 		  		beginIndex=mat.end();
 		  	}
 			sb.append(sql.substring(beginIndex));
