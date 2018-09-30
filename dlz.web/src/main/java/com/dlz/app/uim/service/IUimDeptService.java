@@ -44,6 +44,12 @@ public interface IUimDeptService extends IBaseService{
 	 */	
 	public Page<DeptUser> searchDeptUsers(Page<?> page,JSONMap para);
 	/**
+	 * 获取用户部门ID列表
+	 * @param id
+	 * @return
+	 */
+	List<Long> getUserDeptIds(Long id);
+	/**
 	 * 取得用户部门
 	 * @param userId
 	 * @param dCode
@@ -56,4 +62,16 @@ public interface IUimDeptService extends IBaseService{
 	 * @return
 	 */
 	int saveUserDept(DeptUser deptUser);
+	
+	/**
+	 * 删除用户所有部门
+	 * @param id
+	 */
+	void deleteUserDepts(Long id);
+	/**
+	 * 获取用户上级部门ID
+	 * @param integer
+	 * @return 
+	 */
+	Long getUserParentDeptId(Long userId);
 }

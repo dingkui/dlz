@@ -166,7 +166,7 @@ public class ApiUtil {
 		} finally {
 			if(logger.isInfoEnabled()){
 				if (member != null) {
-						logger.info(getInfo(doType + " " + aType, member.getId(), member.getL_id(), datas, m, ui));
+						logger.info(getInfo(doType + " " + aType, member.getId(), member.getLoginId(), datas, m, ui));
 				} else {
 					logger.info(getInfo(doType + " " + aType, datas, m, ui));
 				}
@@ -196,7 +196,7 @@ public class ApiUtil {
 			HttpServletRequest request=WebUtil.getRequest(); 
 			paras = new Object[parameters.length];
 			for (int i = 0; i < parameters.length; i++) {
-				paras[i] = ValUtil.getObj(request.getParameter(parameters[i].getName()), parameters[i].getType());
+				paras[i] = ValUtil.getObj(request.getParameter(parameters[i].getName()), JacksonUtil.getJavaType(parameters[i].getParameterizedType()));
 			}
 			result=method.invoke(service,  paras);
 		} catch (IllegalArgumentException e) {
@@ -222,9 +222,9 @@ public class ApiUtil {
 		} finally {
 			if (member != null) {
 				if(err!=null){
-					logger.info(getInfo(doType, member.getId(), member.getL_id(), paras, result));
+					logger.info(getInfo(doType, member.getId(), member.getLoginId(), paras, result));
 				}else{
-					logger.info(getInfo(doType, member.getId(), member.getL_id(), paras, err));
+					logger.info(getInfo(doType, member.getId(), member.getLoginId(), paras, err));
 				}
 			} else {
 				if(err!=null){

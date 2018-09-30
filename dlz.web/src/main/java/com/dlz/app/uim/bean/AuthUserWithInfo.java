@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+
 import com.dlz.app.uim.service.IUimInfoService;
 import com.dlz.framework.bean.JSONMap;
-import com.dlz.framework.exception.LogicException;
 import com.dlz.framework.holder.SpringHolder;
-import org.slf4j.Logger;
 import com.dlz.framework.util.JacksonUtil;
 
 /**
@@ -27,7 +27,6 @@ public class AuthUserWithInfo extends AuthUser {
 	
 	private Map<String,Object> infos=new HashMap<>();//会员角色信息或扩展信息
 	private Set<String> infosKey=new HashSet<>();//会员角色信息或扩展信息是否被取得过
-	
 	
 	/**
 	 * 删除取得某角色对应的用户信息

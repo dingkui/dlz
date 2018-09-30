@@ -28,12 +28,26 @@ public interface IUimRoleService extends IBaseService{
 	 * @param updateAll 是否更新所有，true时删除用户所有角色，然后添加
 	 */
 	public boolean addUserRoles(Long roleId,String userIds,boolean updateAll);
-	
+	/**
+	 * 获取用户角色列表
+	 * @param id
+	 * @return
+	 */
+	public List<Long> getUserRoleIds(Long userId);
 	/**
 	 * 查询用户的所有角色
 	 */
 	public List<ResultMap> getUserRoles(Long userId);
-	
+	/**
+	 * 删除用户所有角色
+	 * @param id
+	 */
+	public void deleteUserRoles(Long id);
+	/**
+	 * 删除用户某一角色
+	 * @param id
+	 */
+	public void deleteUserRole(Long id,Long roleId);
 	/**
 	 * 查询角色下用户
 	 */

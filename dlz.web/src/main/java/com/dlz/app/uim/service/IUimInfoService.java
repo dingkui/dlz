@@ -65,7 +65,7 @@ public interface IUimInfoService {
 	 * @param id
 	 * @return
 	 */
-	public List<Integer> getRelations(Long id);
+	public List<Long> getRelations(Long id);
 	
 	/**
 	 * 批量查询用户扩展信息

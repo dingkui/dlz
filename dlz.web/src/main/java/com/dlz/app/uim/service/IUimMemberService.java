@@ -11,24 +11,8 @@ import com.dlz.framework.db.service.IBaseService;
  */
 public interface IUimMemberService extends IBaseService{
 	/**
-	 * 获取用户角色列表
-	 * @param id
-	 * @return
-	 */
-	List<Long> getMemberRoles(int id);
-	/**
 	 * 修改用户状态：启用/禁用
 	 * @param data
 	 */
 	void changeStatus(JSONMap data);
-	
-	void deleteUserRole(Long id);
-	
-	void deleteUserDept(Long id);
-	/**
-	 * 获取用户上级部门ID
-	 * @param integer
-	 * @return 
-	 */
-	Long getUserParentDeptId(Long userId);
 }
