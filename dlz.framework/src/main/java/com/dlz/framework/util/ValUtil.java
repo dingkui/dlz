@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.dlz.framework.bean.JSONList;
 import com.dlz.framework.exception.CodeException;
-import org.slf4j.Logger;
+import com.fasterxml.jackson.databind.JavaType;
 
 /**
  * 对象转换工具类
@@ -231,6 +233,40 @@ public class ValUtil{
 			return (T) getList(input);
 		}
 		return JacksonUtil.coverObj(input, classs);
+	}
+	public static <T> T getObj(Object input,JavaType javaType){
+		if(input==null){
+			return null;
+		}
+		Class classs=javaType.getRawClass();
+		if(classs==String.class){
+			return (T) getStr(input);
+		}
+		if(classs==Integer.class){
+			return (T) getInt(input);
+		}
+		if(classs==Long.class){
+			return (T) getLong(input);
+		}
+		if(classs==Date.class){
+			return (T) getDate(input);
+		}
+		if(classs==BigDecimal.class){
+			return (T) getBigDecimal(input);
+		}
+		if(classs==Float.class){
+			return (T) getFloat(input);
+		}
+		if(classs==Double.class){
+			return (T) getDouble(input);
+		}
+		if(classs==Boolean.class){
+			return (T) getBoolean(input);
+		}
+		if(classs==JSONList.class){
+			return (T) getList(input);
+		}
+		return JacksonUtil.coverObj(input, javaType);
 	}
 
 }
