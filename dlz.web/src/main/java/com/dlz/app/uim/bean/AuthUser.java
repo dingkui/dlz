@@ -3,6 +3,9 @@ package com.dlz.app.uim.bean;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 登录用户信息
  * @author dk 2017-06-15
@@ -10,6 +13,7 @@ import java.util.Set;
  */
 public class AuthUser implements java.io.Serializable {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+	private static Logger logger=LoggerFactory.getLogger(AuthUser.class);
 	/**
 	 * 
 	 */
@@ -78,6 +82,15 @@ public class AuthUser implements java.io.Serializable {
 	}
 	public Set<Long> getDepts() {
 		return depts;
+	}
+	public Long getDeptId() {
+		if(depts.isEmpty()) {
+			return null;
+		}
+		if(depts.size()>1) {
+			logger.warn("用户[{}]有多个部门，选择一个！",getLoginId());
+		}
+		return depts.iterator().next();
 	}
 	/**
 	 * 是否有某角色
