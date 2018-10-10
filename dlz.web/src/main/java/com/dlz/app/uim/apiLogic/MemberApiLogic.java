@@ -2,6 +2,7 @@ package com.dlz.app.uim.apiLogic;
 
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.dlz.app.uim.annotation.AnnoAuth;
 import com.dlz.app.uim.bean.AuthUserWithInfo;
 import com.dlz.app.uim.enums.PwdTypeEnum;
 import com.dlz.app.uim.holder.UserHolder;
+import com.dlz.app.uim.service.IUimDeptService;
 import com.dlz.app.uim.service.IUimInfoService;
 import com.dlz.app.uim.service.IUimMemberService;
 import com.dlz.app.uim.service.IUimRoleService;
@@ -16,7 +18,6 @@ import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
-import org.slf4j.Logger;
 import com.dlz.framework.util.StringUtils;
 import com.dlz.framework.util.config.ConfUtil;
 import com.dlz.framework.util.encry.Md5Util;
@@ -39,6 +40,8 @@ public class MemberApiLogic extends AuthedCommLogic{
 	private IUimInfoService infoService;
 	@Autowired
 	private IUimRoleService roleService;
+	@Autowired
+	private IUimDeptService deptService;
 	/**
 	 * 用户登录
 	 * @param data
@@ -62,11 +65,9 @@ public class MemberApiLogic extends AuthedCommLogic{
 			if(Md5Util.md5(member.getStr("userId")+password).equals(member.getStr("pwd"))){
 				AuthUserWithInfo authUser =new AuthUserWithInfo();
 				authUser.setId(member.getLong("userId"));
-				authUser.setL_id(member.getStr("loginId"));
+				authUser.setLoginId(member.getStr("loginId"));
 //				authUser.setMobile(member.getStr("mobile"));
-				authUser.setName(member.getStr("userName"));
-				List<Long> roles=memberService.getMemberRoles(member.getInt("userId"));
-				authUser.getRoles().addAll(roles);
+				authUser.setUserName(member.getStr("userName"));
 				UserHolder.setAuthInfo(authUser);
 				return r;
 //				r.addData(authUser);
@@ -109,8 +110,7 @@ public class MemberApiLogic extends AuthedCommLogic{
 	 */
 	public JSONResult getMemberRoles(JSONMap data){
 		JSONResult r = JSONResult.createResult();
-		int id = data.getInt("id");
-		List<Long> roles=memberService.getMemberRoles(id);
+		List<Long> roles=roleService.getUserRoleIds(data.getLong("id"));
 		return r.addData(roles);
 	}
 	
@@ -235,15 +235,15 @@ public class MemberApiLogic extends AuthedCommLogic{
 		String ids = data.getStr("ids");
 		if(!StringUtils.isEmpty(id)){
 			memberService.delByKey(id);
-			memberService.deleteUserRole(Long.valueOf(id));
-			memberService.deleteUserDept(Long.valueOf(id));
+			roleService.deleteUserRoles(Long.valueOf(id));
+			deptService.deleteUserDepts(Long.valueOf(id));
 			r.addMsg("删除成功");
 		}else if(!StringUtils.isEmpty(ids)){
 			memberService.delByKeys(ids);
 			String[] delId=ids.split(",");
 			for(int i=1;i<delId.length;i++){
-				memberService.deleteUserRole(Long.valueOf(delId[i]));
-				memberService.deleteUserDept(Long.valueOf(delId[i]));
+				roleService.deleteUserRoles(Long.valueOf(delId[i]));
+				deptService.deleteUserDepts(Long.valueOf(delId[i]));
 			}
 			r.addMsg("批量删除成功");
 		}else{

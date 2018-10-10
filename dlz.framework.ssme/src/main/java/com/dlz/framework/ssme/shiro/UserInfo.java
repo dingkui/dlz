@@ -9,7 +9,6 @@ import com.dlz.app.uim.bean.AuthUser;
  * 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息.
  */
 public class UserInfo extends AuthUser {
-	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static final long serialVersionUID = 1L;
 
 	private Long pType;
@@ -25,8 +24,6 @@ public class UserInfo extends AuthUser {
 	private String wxXcxOpenid;
 	
 	private String wxUnionid;
-	
-	private int deptId;
 	
 	private String deptName;
 	
@@ -153,14 +150,6 @@ public class UserInfo extends AuthUser {
 
 	public void setWxUnionid(String wxUnionid) {
 		this.wxUnionid = wxUnionid;
-	}
-
-	public int getDeptId() {
-		return deptId;
-	}
-
-	public void setDeptId(int deptId) {
-		this.deptId = deptId;
 	}
 
 	public String getDeptName() {

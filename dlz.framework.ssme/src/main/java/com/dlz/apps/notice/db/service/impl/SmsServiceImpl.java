@@ -48,7 +48,7 @@ public class SmsServiceImpl extends BaseServiceImpl<Sms, Long> implements SmsSer
 //			System.setProperty("sun.net.client.defaultReadTimeout", "10000");
 			logger.debug("==============阿里云短信发送开始==============");
 			logger.debug("手机号:"+phone);
-			logger.debug("请求参数："+JacksonUtil.writeValueAsString(params));
+			logger.debug("请求参数："+JacksonUtil.getJson(params));
 			logger.debug("============================================");
 			// 初始化acsClient,暂不支持region化
 			IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
@@ -65,7 +65,7 @@ public class SmsServiceImpl extends BaseServiceImpl<Sms, Long> implements SmsSer
 			request.setTemplateCode(templateCode);
 			
 			// 可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-			request.setTemplateParam(JacksonUtil.writeValueAsString(params));
+			request.setTemplateParam(JacksonUtil.getJson(params));
 			// 选填-上行短信扩展码(无特殊需求用户请忽略此字段)
 			// request.setSmsUpExtendCode("90997");
 			
@@ -73,7 +73,7 @@ public class SmsServiceImpl extends BaseServiceImpl<Sms, Long> implements SmsSer
 			// request.setOutId("yourOutId");
 			// hint 此处可能会抛出异常，注意catch
 			SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-			logger.debug("返回结果:"+JacksonUtil.writeValueAsString(sendSmsResponse));
+			logger.debug("返回结果:"+JacksonUtil.getJson(sendSmsResponse));
 			logger.debug("==============阿里云短信发送开始==============");
 			if (sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
 				return true;

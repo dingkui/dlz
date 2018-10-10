@@ -89,7 +89,7 @@ public class UserController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "list")
-	public Page list(HttpServletRequest request) {
+	public Page<?> list(HttpServletRequest request) {
 		try {
 			UserCriteria uc = Criterias.buildCriteria(UserCriteria.class, request);
 			return userService.pageByExample(uc);
@@ -147,7 +147,7 @@ public class UserController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUnBindUsers")
-	public Page getUnBindUsers(HttpServletRequest request, Page page) throws Exception {
+	public Page<?> getUnBindUsers(HttpServletRequest request, Page<?> page) throws Exception {
 		ParaMap pm = new ParaMap("key.user.searchUnBindUsers", page);
 		pm.addPara("userName", request.getParameter("userName"));
 		pm.addPara("dId", request.getParameter("dId"));//部门ID
@@ -183,7 +183,7 @@ public class UserController extends BaseController{
 	public JSONObject getUserInfo(@PathVariable("userId") Long userId) {
 		try {
 			User u = userService.selectByPrimaryKey(userId);
-	    JSONObject userJsonObj = JacksonUtil.readValue(JacksonUtil.writeValueAsString(u), JSONObject.class);
+	    JSONObject userJsonObj = JacksonUtil.readValue(JacksonUtil.getJson(u), JSONObject.class);
 	    JSONObject mergeJsonObj = new JSONObject();
 	    mergeJsonObj.putAll(userJsonObj);
 	    return mergeJsonObj;

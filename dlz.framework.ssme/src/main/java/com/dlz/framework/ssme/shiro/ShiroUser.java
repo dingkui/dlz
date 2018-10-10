@@ -38,8 +38,8 @@ public class ShiroUser extends UserInfos implements Serializable {
     	this.loginId=loginId;
     	this.userName=userName;
     	super.setId(userId);
-    	super.setL_id(loginId);
-    	super.setName(userName);
+    	super.setLoginId(loginId);
+    	super.setUserName(userName);
     	super.setPriceLevel(priceLevel);
 	}
 	/**

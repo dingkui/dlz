@@ -18,9 +18,6 @@ public class UserInfos extends UserInfo {
 		return roleName;
 	}
 
-	public Set<Dept> getDepts() {
-		return depts;
-	}
 	public Dept getDept() {
 		if(depts!=null&&!depts.isEmpty()){
 			return depts.iterator().next();

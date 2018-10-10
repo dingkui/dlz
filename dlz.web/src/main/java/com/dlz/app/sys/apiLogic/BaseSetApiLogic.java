@@ -61,7 +61,7 @@ public class BaseSetApiLogic extends AuthedCommLogic{
 		
 		data.add("update_time", new Date());
 		data.add("update_id", authInfo.getId());
-		data.add("update_name", authInfo.getName());
+		data.add("update_name", authInfo.getUserName());
 		
 		String baseCode = data.getStr("baseCode");
 		if(modalType == 0){
@@ -75,7 +75,7 @@ public class BaseSetApiLogic extends AuthedCommLogic{
 			iParaMap.addValue("status", 1);
 			iParaMap.addValue("create_time", new Date());
 			iParaMap.addValue("create_id", authInfo.getId());
-			iParaMap.addValue("create_name", authInfo.getName());
+			iParaMap.addValue("create_name", authInfo.getUserName());
 			commService.excuteSql(iParaMap);
 		}else{
 			UpdateParaMap uParaMap = new UpdateParaMap("t_b_base_set");

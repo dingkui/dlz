@@ -2,6 +2,8 @@ package com.dlz.framework.util;
 
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,12 +14,13 @@ import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+
 import com.dlz.framework.bean.JSONList;
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
 import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.exception.CodeException;
-import org.slf4j.Logger;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,13 +50,14 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 /**
  * 2013 2013-9-13 下午4:54:15
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({ "rawtypes","unchecked"})
 public class JacksonUtil {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(JacksonUtil.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private final static Class<?> CLASS_OBJECT = Object.class;
 	static {
+		//添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
 		Deserializers deserializers=new Deserializers() {
 			@Override
 			public JsonDeserializer<?> findTreeNodeDeserializer(Class<? extends JsonNode> nodeType, DeserializationConfig config, BeanDescription beanDesc)
@@ -93,6 +97,7 @@ public class JacksonUtil {
 			public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) throws JsonMappingException {
 				Class<?> rawType = type.getRawClass();
 		        if (rawType == CLASS_OBJECT) {
+		        	//添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
 		            return new JacksonObjectDeserializer();
 		        }
 		        return null;
@@ -140,34 +145,10 @@ public class JacksonUtil {
 	public static ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
-
+	
 	public static <T> T readValue(String content, Class<T> valueType) {
 		try {
 			return objectMapper.readValue(content, valueType);
-		} catch (Exception e) {
-			logger.error("JacksonUtil.readValue error,content:"+content);
-			logger.error("JacksonUtil.readValue error,valueType:"+valueType);
-			logger.error(e.getMessage(), e);
-			return null;
-		}
-	}
-
-	public static <T> List<T> readListValue(String content, Class<T> valueType) {
-		try {
-			JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, valueType);
-			return objectMapper.readValue(content,javaType);
-		} catch (Exception e) {
-			logger.error("JacksonUtil.readValue error,content:"+content);
-			logger.error("JacksonUtil.readValue error,valueType:"+valueType);
-			logger.error(e.getMessage(), e);
-			return null;
-		}
-	}
-	
-	public static <T> T readValue(String content, T valueType) {
-		try {
-			return objectMapper.readValue(content, new TypeReference<T>() {
-            });
 		} catch (Exception e) {
 			logger.error("JacksonUtil.readValue error,content:"+content);
 			logger.error("JacksonUtil.readValue error,valueType:"+valueType);
@@ -184,6 +165,43 @@ public class JacksonUtil {
 			logger.error(e.getMessage(), e);
 			return null;
 		}
+	}
+	public static <T> T readValue(String content, JavaType valueType) {
+		try {
+			return objectMapper.readValue(content, valueType);
+		} catch (Exception e) {
+			logger.error("JacksonUtil.readValue error,content:"+content);
+			logger.error("JacksonUtil.readValue error,valueType:"+valueType);
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+	public static <T> List<T> readListValue(String content, Class<T> valueType) {
+		try {
+			JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, valueType);
+			return objectMapper.readValue(content,javaType);
+		} catch (Exception e) {
+			logger.error("JacksonUtil.readValue error,content:"+content);
+			logger.error("JacksonUtil.readValue error,valueType:"+valueType);
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+	
+	public static JavaType getJavaType(Type type) {
+		if(type==null)
+			return null;
+		if (type instanceof ParameterizedType) { // 判断获取的类型是否是参数类型
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+			Type[] typesto = parameterizedType.getActualTypeArguments();// 强制转型为带参数的泛型类型，
+            JavaType[] subclass=new JavaType[typesto.length];
+            for(int j=0;j<typesto.length;j++) {
+            	subclass[j]=getJavaType(typesto[j]);
+            }
+            return objectMapper.getTypeFactory().constructParametricType((Class)parameterizedType.getRawType(),subclass);
+        }else{
+        	return objectMapper.getTypeFactory().constructParametricType((Class)type,new JavaType[0]);
+        }
 	}
 	
 
@@ -220,7 +238,28 @@ public class JacksonUtil {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
+	public static String cover2String(Object o) {
+		try {
+			if(o==null){
+				return null;
+			}
+			if(o instanceof CharSequence || o instanceof Number){
+				return o.toString().trim();
+			}else{
+				return getJson(o);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+	
+	/**
+	 * 类型转换
+	 * @param o
+	 * @param valueType
+	 * @return
+	 */
 	public static <T> T coverObj(Object o, Class<T> valueType) {
 		try {
 			if(o==null){
@@ -247,31 +286,58 @@ public class JacksonUtil {
 		}
 		return null;
 	}
-
-	public static String cover2String(Object o) {
+	/**
+	 * 类型转换
+	 * @param o
+	 * @param valueType
+	 * @return
+	 */
+	public static <T> T coverObj(Object o, JavaType javaType) {
 		try {
 			if(o==null){
 				return null;
 			}
-			if(o instanceof CharSequence || o instanceof Number){
-				return o.toString().trim();
-			}else{
-				return getJson(o);
+			Class valueType=javaType.getRawClass();
+			if(valueType.isAssignableFrom(o.getClass())){
+				return (T)o;
 			}
+			if(valueType.isAssignableFrom(JSONList.class)){
+				return (T)new JSONList(o);
+			}
+			String str=null;
+			if(o instanceof CharSequence){
+				str=o.toString().trim();
+			}else{
+				str=getJson(o);
+			}
+//			if(valueType.isAssignableFrom(RestPara.class)){
+//				return (T)new RestPara(str);
+//			}
+			return readValue(str, javaType);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
-	
-	public static <T> T at(Object data,String key, Class<T> valueType){
+
+	/**
+	 * 对象取值
+	 * @param data
+	 * @param key
+	 * @param javaType
+	 * @return
+	 */
+	public static <T> T at(Object data,String key, JavaType javaType){
 		Object o=at(data, key);
 		if(o==null){
 			return null;
 		}
-		return coverObj(o, valueType);
+		return coverObj(o, javaType);
 	}
 	
+	public static <T> T at(Object data,String key, Class<T> valueType){
+		return at(data, key, valueType);
+	}
 	/**
 	 * 从对象中使用路径取出需要的值
 	 * @param data 可以是json字符串，数组，集合或者对象
@@ -312,14 +378,11 @@ public class JacksonUtil {
 		}
 		return at(list.get(index),key.substring(end+1));
 	}
-	
 	private static Object getObjFromMap(Map para,String key){
 		String pName=key;
 		if(para.containsKey(pName)){
 			return para.get(pName);
 		}
-		
-		
 		int index=key.indexOf('.');
 		if(index>-1){
 			pName=key.substring(0,index);
@@ -327,7 +390,6 @@ public class JacksonUtil {
 				return at(para.get(pName), key.substring(index));
 			}
 		}
-		
 		index=pName.indexOf('[');
 		if(index>-1){
 			pName=key.substring(0,index);
@@ -335,7 +397,6 @@ public class JacksonUtil {
 				return at(para.get(pName), key.substring(index));
 			}
 		}
-		
 		return null;
 	}
 	
@@ -353,7 +414,6 @@ public class JacksonUtil {
 		}
 		return nodeMap;
 	}
-
 	public static String optionString(JsonNode jsonNode, String key, String defaultVale) {
 		JsonNode node = jsonNode.get(key);
 		if (node == null) {
@@ -363,10 +423,8 @@ public class JacksonUtil {
 	}
 
 	public static String optionString(JsonNode jsonNode, String key) {
-
 		return optionString(jsonNode, key, "");
 	}
-
 	public static int optionInt(JsonNode jsonNode, String key, int defaultVale) {
 		JsonNode node = jsonNode.get(key);
 		if (node == null) {
@@ -374,29 +432,22 @@ public class JacksonUtil {
 		}
 		return node.asInt();
 	}
-
 	public static int optionInt(JsonNode jsonNode, String key) {
-
 		return optionInt(jsonNode, key, 0);
 	}
 
 	public static void xml2json(Class clazz, Reader reader, OutputStream os) {
 		xml2json(clazz, reader, os, null);
 	}
-
 	public static void xml2json(Class clazz, Reader reader, OutputStream os, BeanProcesser beanProcesser) {
 		try {
 			JAXBContext context = JAXBContext.newInstance(clazz);
 			Unmarshaller unmarshal = context.createUnmarshaller();
-
 			Object bean = unmarshal.unmarshal(reader);
-
 			ObjectMapper objectMapper = new ObjectMapper();
 			JaxbAnnotationModule module = new JaxbAnnotationModule();
 			objectMapper.registerModule(module);
-
 			objectMapper.writeValue(os, bean);
-
 			if (beanProcesser != null) {
 				beanProcesser.processBean(bean);
 			}
@@ -404,17 +455,6 @@ public class JacksonUtil {
 			logger.error(e.getMessage(), e);
 		}
 	}
-
-	public static String writeValueAsString(Object bean) {
-		// ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			return objectMapper.writeValueAsString(bean);
-		} catch (JsonProcessingException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return "";
-	}
-
 	public interface BeanProcesser {
 		public Object processBean(Object bean);
 	}
