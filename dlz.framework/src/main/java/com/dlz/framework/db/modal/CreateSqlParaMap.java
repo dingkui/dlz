@@ -27,6 +27,7 @@ public class CreateSqlParaMap extends BaseParaMap{
 		super(Sql,page);
 		this.tableName=tableName;
 		addPara(STR_TABLENAME, tableName);
+		addPara(STR_WHERE, new StringBuilder(" where 2=3"));
 	}
 	public void setWhere(String where){
 		addPara(STR_WHERE, where);
@@ -72,10 +73,10 @@ public class CreateSqlParaMap extends BaseParaMap{
 			return;
 		}
 		StringBuilder sbWhere = (StringBuilder)this.getPara().get(STR_WHERE);
-		if(sbWhere==null){
-			sbWhere=new StringBuilder(" where 2=3");
-			addPara(STR_WHERE, sbWhere);
-		}
+//		if(sbWhere==null){
+//			sbWhere=new StringBuilder(" where 2=3");
+//			addPara(STR_WHERE, sbWhere);
+//		}
 		if(sbWhere.toString().endsWith("2=3")){
 			sbWhere.replace(7, 10, "1=1");
 		}
