@@ -35,6 +35,7 @@ public class AuthUserCache extends AbstractCache<Long, AuthUserWithInfo>{
 					throw new CodeException("用户取得失败，id="+user_id);
 				}
 				final AuthUserWithInfo authUser = mapByKey.as(AuthUserWithInfo.class);
+				authUser.setId(user_id);
 				authUser.getRoles().addAll(roleService.getUserRoleIds(user_id));
 				authUser.getDepts().addAll(deptService.getUserDeptIds(user_id));
 				return authUser;
