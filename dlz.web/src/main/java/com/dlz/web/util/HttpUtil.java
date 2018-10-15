@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -334,50 +333,4 @@ public class HttpUtil {
         }
     	return sbUrl.toString();
     }
-
-
-	
-	public static String getIpAddr(HttpServletRequest request) {
-		String ip = request.getHeader("x-forwarded-for");
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getRemoteAddr();
-		}
-		if (!isnull(ip) && ip.contains(",")) {
-			String[] ips = ip.split(",");
-			ip = ips[ips.length - 1];
-		}
-		return ip;
-	}
-
-	public static String getServer(HttpServletRequest request) {
-		String scheme = request.getHeader("x-real-scheme");
-		if (scheme == null || scheme.length() == 0 || "unknown".equalsIgnoreCase(scheme)) {
-			scheme = request.getScheme();
-		}
-		String port = request.getHeader("x-real-port");
-		if (port == null || port.length() == 0 || "unknown".equalsIgnoreCase(port)) {
-			port = String.valueOf(request.getServerPort());
-		}
-		return scheme + "://" + request.getServerName() + ":" + port;
-	}
-	
-	/**
-	 * str空判断
-	 * 
-	 * @param str
-	 * @return
-	 * @author guoyx
-	 */
-	private static boolean isnull(String str) {
-		if (null == str || str.equalsIgnoreCase("null") || str.equals("")) {
-			return true;
-		} else
-			return false;
-	}
 }
