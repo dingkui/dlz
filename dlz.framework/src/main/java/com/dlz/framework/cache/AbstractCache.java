@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.exception.CodeException;
@@ -26,8 +27,11 @@ public abstract class AbstractCache<KEY,T>{
 	private static Logger logger = LoggerFactory.getLogger(AbstractCache.class);
 
 	private static Set<String> CacheSet = new HashSet<String>();
+    public static final String CACHE_NAME_GLOBAL  = "_global";//全局缓存
+	private static ICacheDeal cache_global=null;
 	
 	@Autowired
+	@Nullable
 	public ICommService commService;
 	@Autowired
 	private ICacheCreator cacheCreator;
@@ -66,14 +70,30 @@ public abstract class AbstractCache<KEY,T>{
 	public AbstractCache(String cacheName) { 
 		this(cacheName,-1);
 	}
+	public AbstractCache() { 
+		this(CACHE_NAME_GLOBAL,-1);
+	}
+	
+	public static void main(String[] args) {
+		String cacheName="_";
+		System.out.println(cacheName.substring(0, 1).toLowerCase()+cacheName.substring(1).toLowerCase());
+	}
 	
 	@PostConstruct
 	private void _init(){
-		if(CacheSet.contains(cacheName)){
-			throw new CodeException("缓存已经存在，不能重复定义："+cacheName);
+		if(CACHE_NAME_GLOBAL.equals(cacheName)){
+			if(cache_global==null){
+				CacheSet.add(cacheName);
+				cache_global=cacheCreator.createCaheDeal(cacheName);
+			}
+			cache=cache_global;
+		}else{
+			if(CacheSet.contains(cacheName)){
+				throw new CodeException("缓存已经存在，不能重复定义："+cacheName);
+			}
+			CacheSet.add(cacheName);
+			cache=cacheCreator.createCaheDeal(cacheName);
 		}
-		CacheSet.add(cacheName);
-		cache=cacheCreator.createCaheDeal(cacheName);
 	}
 	
 	

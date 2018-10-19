@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.dlz.framework.cache.ICacheCreator;
 import com.dlz.framework.exception.CodeException;
+import com.dlz.framework.util.StringUtils;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -41,13 +43,22 @@ public class RedisConfig {
     	return jedisPool.getResource();
     }
 
+    @Bean
+    public ICacheCreator CacheCreator() throws Exception{
+            return new CacheDeaRedisImpl();
+    }
+    
     @Bean(name="jedisPool")
     public JedisPool jedisPool() throws Exception{
         try{
             JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
             jedisPoolConfig.setMaxTotal(200);
             jedisPoolConfig.setMaxIdle(-1);
-            jedisPool = new JedisPool(jedisPoolConfig,host,port,timeout);
+            if(StringUtils.isNotEmpty(password)) {
+            	jedisPool=new JedisPool(jedisPoolConfig, host, port, timeout, password);
+            }else{
+            	jedisPool = new JedisPool(jedisPoolConfig,host,port,timeout);
+            }
             logger.info(">>>>>>>>>>>>>>>>>>>>>> Initial Jedis Pool Successfully.");
             return jedisPool;
         }catch (Exception e){

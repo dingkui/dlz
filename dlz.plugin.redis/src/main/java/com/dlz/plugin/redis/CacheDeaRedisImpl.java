@@ -1,11 +1,13 @@
 package com.dlz.plugin.redis;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dlz.framework.cache.AbstractCache;
 import com.dlz.framework.cache.AbstractCache.ICacheDeal;
 import com.dlz.framework.cache.ICacheCreator;
 import com.dlz.framework.util.system.SerializeUtil;
@@ -22,6 +24,9 @@ import redis.clients.util.SafeEncoder;
  */
 public class CacheDeaRedisImpl implements ICacheCreator {
 	private static Logger logger = LoggerFactory.getLogger(CacheDeaRedisImpl.class);
+	
+	private static byte[] nxxx=SafeEncoder.encode("XX");
+	private static byte[] expx=SafeEncoder.encode("EX");
 
 	@Autowired
 	private JedisPool jedisSentinelPool;
@@ -35,7 +40,7 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 		String name;
 
 		Cache(String name) {
-			this.name = name;
+			this.name = AbstractCache.CACHE_NAME_GLOBAL.equals(name)?"":(name+"_");
 			logger.debug("redis缓存初始化：" + name);
 		}
 
@@ -43,7 +48,8 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 		public Serializable get(Serializable key) {
 			final Jedis resource = jedisSentinelPool.getResource();
 			final Client client = resource.getClient();
-			client.hget(SafeEncoder.encode(name), SafeEncoder.encode(key.toString()));
+//			client.hget(SafeEncoder.encode(name), SafeEncoder.encode(key.toString()));
+			client.get(SafeEncoder.encode(name+key.toString()));
 			final byte[] result = client.getBinaryBulkReply();
 			if (null != result) {
 				return (Serializable)SerializeUtil.deserialize(result);
@@ -51,23 +57,35 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 				return null;
 			}
 		}
-
+		
 		@Override
 		public void put(Serializable key, Serializable value, int exp) {
 			final Jedis resource = jedisSentinelPool.getResource();
 			final Client client = resource.getClient();
-			client.hset(SafeEncoder.encode(name), SafeEncoder.encode(key.toString()), SerializeUtil.serialize(value));
-			client.getIntegerReply();
+//			client.hset(SafeEncoder.encode(name), SafeEncoder.encode(key.toString()), SerializeUtil.serialize(value));
+			if(exp>0){
+				client.set(SafeEncoder.encode(name+key.toString()), SerializeUtil.serialize(value), nxxx, expx, exp);
+			}else{
+				client.set(SafeEncoder.encode(name+key.toString()), SerializeUtil.serialize(value));
+			}
+			client.getBinaryBulkReply();
 		}
 
 		@Override
 		public void remove(Serializable key) {
-			jedisSentinelPool.getResource().hdel(name, key.toString());
+//			jedisSentinelPool.getResource().hdel(name,key.toString());
+			jedisSentinelPool.getResource().del(name+key.toString());
 		}
 
 		@Override
 		public void removeAll() {
-			jedisSentinelPool.getResource().del(name);
+//			jedisSentinelPool.getResource().del(name);
+			if(name.length()>=0){
+				final Set<String> keys = jedisSentinelPool.getResource().keys(name+"*");
+				jedisSentinelPool.getResource().del((String[])keys.toArray());
+			}else{
+				logger.warn("redis _global cache can't removeAll");
+			}
 		}
 	}
 }

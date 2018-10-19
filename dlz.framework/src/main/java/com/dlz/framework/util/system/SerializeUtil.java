@@ -12,9 +12,33 @@ import java.io.ObjectOutputStream;
  * @author dk
  */
 public class SerializeUtil {
+	public static void main(String[] args) {
+		p(new StringBuilder("xassa"));
+		p("");
+		p("XXsdas");
+		p("阿瑟东十分士大夫SDFADFCSASDAWD");
+		p(1l);
+		p(1d);
+		p(1);
+	}
+	private static void p(Object o){
+		byte[] b=serialize(o);
+		System.out.println();
+		for (int i = 0; i < b.length; i++) {
+			System.out.print(b[i]+" ");
+		}
+	}
+	private static String CHARSET="UTF-8";
 	public static byte[] serialize(Object value) {
 		if (value == null) {
 			throw new NullPointerException("Can't serialize null");
+		}
+		if(value instanceof CharSequence){
+			try {
+				return value.toString().getBytes(CHARSET);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		byte[] rv = null;
 		ByteArrayOutputStream bos = null;
@@ -42,6 +66,13 @@ public class SerializeUtil {
 	}
 
 	public static Object deserialize(byte[] in) {
+		if(in.length<6 || in[0]!=-84 || in[1]!=-19 || in[2]!=0 || in[3]!=5){
+			try {
+				return new String(in,CHARSET);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		Object rv = null;
 		ByteArrayInputStream bis = null;
 		ObjectInputStream is = null;
