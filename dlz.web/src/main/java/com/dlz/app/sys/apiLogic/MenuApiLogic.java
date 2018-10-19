@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,9 @@ import com.dlz.app.uim.annotation.AnnoAuth;
 import com.dlz.app.uim.bean.AuthUser;
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
+import com.dlz.framework.db.modal.ParaMap;
 import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.exception.CodeException;
-import org.slf4j.Logger;
 import com.dlz.framework.util.StringUtils;
 import com.dlz.framework.util.config.ConfUtil;
 import com.dlz.web.logic.AuthedCommLogic;
@@ -33,17 +34,18 @@ public class MenuApiLogic extends AuthedCommLogic{
 	private Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
 	@Autowired
 	IMenuService menuService;
-	
+
 	/**
 	 * 获取用户菜单树
+	 * 
 	 * @param data
 	 * @return
 	 */
 	@AnnoAuth("*")
-	public JSONResult done(JSONMap data){
+	public JSONResult done(JSONMap data) {
 		JSONResult r = JSONResult.createResult();
-		List<ResultMap> resultMapList=menuService.searchMapList(new JSONMap());
-		return r.addData(getMenus(resultMapList,"0",true,getMember()));
+		List<ResultMap> resultMapList = menuService.searchMapList(new JSONMap("type", "1"));
+		return r.addData(getMenus(resultMapList, "0", true, getMember()));
 	}
 	
 	/**
@@ -124,11 +126,37 @@ public class MenuApiLogic extends AuthedCommLogic{
 	 * @param data
 	 * @return
 	 */
-	public JSONResult save(JSONMap data){
+	public JSONResult save(JSONMap data) {
 		JSONResult r = JSONResult.createResult();
 		try {
-			menuService.addOrUpdate(data);
+			JSONMap retJSONMap = menuService.addOrUpdate(data);
+			//add by zhuwb 2018/10/19 角色菜单关系绑定start
+			// 按钮不需要保存角色-菜单关联关系；
+			if ("2".equals(retJSONMap.getStr("type"))) {
+				return r.addMsg("保存成功");
+			}
+			// 保存角色-菜单；角色id(,分隔)
+			String access = data.getStr("access");
+			// 获取主键ID
+			Long menuId = retJSONMap.getLong("id");
+			logger.debug("菜单Id:{}", menuId);
+			commService.excuteSql("delete from t_p_role_menu where menu_id = ?", menuId);
+			if (access.indexOf("all") > -1) {
+				// 所有角色都有该菜单权限、
+				ParaMap pm = new ParaMap("INSERT INTO t_p_role_menu (role_id, menu_id, menu_type) select role_id,#{menuId} as menu_id,#{menuType} as menu_type from t_p_role");
+				pm.addPara("menuId", menuId);
+				pm.addPara("menuType", retJSONMap.getStr("type"));
+				commService.excuteSql(pm);
+			} else {
+				// 保存角色（已选择角色）-菜单；
+				ParaMap pm = new ParaMap("INSERT INTO t_p_role_menu (role_id, menu_id, menu_type) select role_id,#{menuId} as menu_id,#{menuType} as menu_type from t_p_role where role_id in (${roleIds})");
+				pm.addPara("menuId", menuId);
+				pm.addPara("menuType", retJSONMap.getStr("type"));
+				pm.addPara("roleIds", access);
+				commService.excuteSql(pm);
+			}
 			r.addMsg("保存成功");
+			//add by zhuwb 2018/10/19 角色菜单关系绑定end
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			r.addErr("保存失败");

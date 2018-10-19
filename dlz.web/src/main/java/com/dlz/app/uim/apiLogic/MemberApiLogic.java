@@ -1,5 +1,6 @@
 package com.dlz.app.uim.apiLogic;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -80,6 +81,16 @@ public class MemberApiLogic extends AuthedCommLogic{
 		ThreadHolder.sessionInvalidate();
 		return r;
 	}
+	
+	public JSONResult btnPermis(JSONMap data){
+		JSONResult r = JSONResult.createResult();
+		long userId = UserHolder.getAuthInfo().getId();
+		System.out.println("userId:"+userId);
+		//TODO
+		r.addData(Arrays.asList("b:user:add","b:user:edit","b:user:del"));
+		return r;
+	}
+	
 	/**
 	 * 获取用户分页列表
 	 * @param data
