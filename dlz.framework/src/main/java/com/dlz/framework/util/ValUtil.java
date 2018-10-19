@@ -1,6 +1,7 @@
 package com.dlz.framework.util;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -145,6 +146,23 @@ public class ValUtil{
 		}
 		return new JSONList(defaultV);
 	}
+	public static <T> List<T> getListObj(Object input,Class<T> clazz){
+		if(input==null){
+			return null;
+		}
+		if (input instanceof List) {
+			final List input2 = (List)input;
+			if(input2.size()==0 || (input2.size()>0 &&clazz.isAssignableFrom(input2.get(0).getClass()))){
+				return (List<T>)input2;
+			}
+		}
+		try{
+			return (List<T>)new JSONList(input,clazz);
+		}catch(CodeException e){
+			logger.warn(e.getMessage());
+		}
+		return null;
+	}
 	
 	public static Date getDate(Object input){
 		return getDate(input, null);
@@ -201,6 +219,38 @@ public class ValUtil{
 	}
 	public static String getDateStr(Object input){
 		return getDateStr(input, null);
+	}
+	public static <T> T[] getArrayObj(Object input,Class<T> clazz,Class<? extends T[]> clazzs){
+		if(input==null){
+			return null;
+		}
+		if (input instanceof Collection){
+			input=(Object[])((Collection)input).toArray();
+		}
+		
+		if(input instanceof Object[]) {
+			 Object[] g=(Object[])input;
+			 if(g.length==0||(g.length>0 && clazz.isAssignableFrom(g[0].getClass()))){
+				 return Arrays.copyOf(g, g.length,clazzs);
+			 }
+		}
+		try{
+			String string=null;
+			if(input instanceof CharSequence){
+				string=input.toString().trim();
+			}else{
+				string=JacksonUtil.getJson(input);
+			}
+			if(string.startsWith("[") && string.endsWith("]")){
+				final List<T> readListValue = JacksonUtil.readListValue(string, clazz);
+				return Arrays.copyOf(readListValue.toArray(), readListValue.size(),clazzs);
+			}else{
+				throw new CodeException("参数不能转换成List:"+string);
+			}
+		}catch(CodeException e){
+			logger.warn(e.getMessage());
+		}
+		return null;
 	}
 	public static Object[] getArray(Object input,Object[] defaultV){
 		if(input==null){

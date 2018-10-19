@@ -48,14 +48,20 @@ public interface IUniversalVals {
 	default Object[] getArray(String key){
 		return  getArray(key,null);
 	}
-	default Object[] getArray(String key,Object[] defaultV){
+	default Object[] getArray(String key, Object[] defaultV){
 		return ValUtil.getArray(JacksonUtil.at(getInfoObject(),key),defaultV);
+	}
+	default <T> T[] getArrayObj(String key, Class<T> clazz, Class<? extends T[]> clazzs){
+		return ValUtil.getArrayObj(JacksonUtil.at(getInfoObject(),key),clazz,clazzs);
 	}
 	default List getList(String key){
 		return  getList(key,null);
 	}
 	default List getList(String key,List defaultV){
 		return ValUtil.getList(JacksonUtil.at(getInfoObject(),key),defaultV);
+	}
+	default <T> List<T> getListObj(String key,Class<T> clazz){
+		return ValUtil.getListObj(JacksonUtil.at(getInfoObject(),key),clazz);
 	}
 	default String getStr(String key){
 		return  getStr(key,null);

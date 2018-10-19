@@ -1,10 +1,13 @@
 package com.dlz.common.util;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.dlz.framework.bean.JSONList;
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.util.JacksonUtil;
+import com.dlz.framework.util.ValUtil;
 
 public class JSONMapTest {
 	@Test
@@ -144,6 +147,15 @@ public class JSONMapTest {
 		System.out.println(jsonList.get(0) instanceof JSONMap);
 		System.out.println(jsonList.get(0) instanceof AA);
 		System.out.println(jsonList);
+	}
+	
+	@Test
+	public void test9(){
+		String a="[\"a\",1]";
+		String[] c=ValUtil.getArrayObj(a, String.class,String[].class);
+		List<String> c2=ValUtil.getListObj(a, String.class);
+		System.out.println(c2.get(0));
+		System.out.println(c[1]);
 	}
 	
 }
