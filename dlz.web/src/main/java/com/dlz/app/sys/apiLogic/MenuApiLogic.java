@@ -15,8 +15,10 @@ import com.dlz.app.uim.annotation.AnnoAuth;
 import com.dlz.app.uim.bean.AuthUser;
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
+import com.dlz.framework.db.modal.InsertParaMap;
 import com.dlz.framework.db.modal.ParaMap;
 import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.UpdateParaMap;
 import com.dlz.framework.exception.CodeException;
 import com.dlz.framework.util.StringUtils;
 import com.dlz.framework.util.config.ConfUtil;
@@ -129,29 +131,36 @@ public class MenuApiLogic extends AuthedCommLogic{
 	public JSONResult save(JSONMap data) {
 		JSONResult r = JSONResult.createResult();
 		try {
-			JSONMap retJSONMap = menuService.addOrUpdate(data);
-			//add by zhuwb 2018/10/19 角色菜单关系绑定start
-			// 按钮不需要保存角色-菜单关联关系；
-			if ("2".equals(retJSONMap.getStr("type"))) {
-				return r.addMsg("保存成功");
+			Long key=data.getLong("id");
+			if(key==null){
+				InsertParaMap pm=new InsertParaMap("t_p_menu");
+				data.add("id", commService.getSeq("t_p_menu_id_seq"));
+				pm.addValues(data);
+				commService.excuteSql(pm);
+			}else{
+				UpdateParaMap pm=new UpdateParaMap("t_p_menu");
+				pm.addSetValues(data);
+				pm.addEqCondition("id", key);
+				commService.excuteSql(pm);
 			}
+			//add by zhuwb 2018/10/19 角色菜单关系绑定start
 			// 保存角色-菜单；角色id(,分隔)
 			String access = data.getStr("access");
 			// 获取主键ID
-			Long menuId = retJSONMap.getLong("id");
+			Long menuId = data.getLong("id");
 			logger.debug("菜单Id:{}", menuId);
 			commService.excuteSql("delete from t_p_role_menu where menu_id = ?", menuId);
 			if (access.indexOf("all") > -1) {
 				// 所有角色都有该菜单权限、
 				ParaMap pm = new ParaMap("INSERT INTO t_p_role_menu (role_id, menu_id, menu_type) select role_id,#{menuId} as menu_id,#{menuType} as menu_type from t_p_role");
 				pm.addPara("menuId", menuId);
-				pm.addPara("menuType", retJSONMap.getStr("type"));
+				pm.addPara("menuType", data.getStr("type"));
 				commService.excuteSql(pm);
 			} else {
 				// 保存角色（已选择角色）-菜单；
 				ParaMap pm = new ParaMap("INSERT INTO t_p_role_menu (role_id, menu_id, menu_type) select role_id,#{menuId} as menu_id,#{menuType} as menu_type from t_p_role where role_id in (${roleIds})");
 				pm.addPara("menuId", menuId);
-				pm.addPara("menuType", retJSONMap.getStr("type"));
+				pm.addPara("menuType", data.getStr("type"));
 				pm.addPara("roleIds", access);
 				commService.excuteSql(pm);
 			}
@@ -160,6 +169,23 @@ public class MenuApiLogic extends AuthedCommLogic{
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			r.addErr("保存失败");
+		}
+		return r;
+	}
+	
+	/** 
+	* @Title: nameExists 
+	* @Description: 检查菜单名是否已经存在、 
+	* @throws 
+	*/
+	public JSONResult nameExists(JSONMap data){
+		JSONResult r = JSONResult.createResult();
+		try {
+			List<ResultMap> list = menuService.searchMapList(data);
+			r.addData((list.size()>0));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			r.addErr("查询失败");
 		}
 		return r;
 	}
