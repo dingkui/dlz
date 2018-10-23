@@ -1,13 +1,15 @@
 package com.dlz.app.uim.apiLogic;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dlz.app.sys.service.IMenuService;
 import com.dlz.app.uim.annotation.AnnoAuth;
+import com.dlz.app.uim.bean.AuthUser;
 import com.dlz.app.uim.bean.AuthUserWithInfo;
 import com.dlz.app.uim.enums.PwdTypeEnum;
 import com.dlz.app.uim.holder.UserHolder;
@@ -43,6 +45,8 @@ public class MemberApiLogic extends AuthedCommLogic{
 	private IUimRoleService roleService;
 	@Autowired
 	private IUimDeptService deptService;
+	@Autowired
+	private IMenuService menuService;
 	/**
 	 * 用户登录
 	 * @param data
@@ -82,12 +86,14 @@ public class MemberApiLogic extends AuthedCommLogic{
 		return r;
 	}
 	
-	public JSONResult btnPermis(JSONMap data){
+	public JSONResult btnPermis(JSONMap data) {
 		JSONResult r = JSONResult.createResult();
-		long userId = UserHolder.getAuthInfo().getId();
-		System.out.println("userId:"+userId);
-		//TODO
-		r.addData(Arrays.asList("b:user:add","b:user:edit","b:user:del"));
+		AuthUser authInfo = UserHolder.getAuthInfo();
+		Set<Long> roles = authInfo.getRoles();
+		String rolesIds = StringUtils.join(roles.toArray(), ",");
+		// 根据角色ID，查询按钮(//1#菜单，2#按钮)
+		List<String> btnPremis = menuService.getPremisByRoleIds("2", rolesIds);
+		r.addData(btnPremis);
 		return r;
 	}
 	
