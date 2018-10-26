@@ -29,13 +29,13 @@ public class ValUtil{
 		if(o instanceof BigDecimal) {
 			return (BigDecimal)o;
 		}else if (o instanceof Float) {
-			return new BigDecimal(((Float)o).doubleValue());
+			return new BigDecimal(o.doubleValue());
 		}else if (o instanceof Double) {
-			return new BigDecimal(((Double)o).doubleValue());
+			return new BigDecimal(o.doubleValue());
 		}else if (o instanceof Integer) {
-			return new BigDecimal(((Integer)o).intValue());
+			return new BigDecimal(o.intValue());
 		}else if (o instanceof Long) {
-			return new BigDecimal(((Long)o).longValue());
+			return new BigDecimal(o.longValue());
 		}
 		return new BigDecimal(o.toString());
 	}
@@ -185,9 +185,9 @@ public class ValUtil{
 			return DateUtil.parseData(value, "yyyy-MM");
 		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
 			return DateUtil.parseData(value, "yyyy-MM-dd");
-		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")) {
+		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")) {
 			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm");
-		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
+		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
 			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm:ss");
 		} else if (value.matches("^\\d{1,2}:\\d{1,2}$")) {
 			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
@@ -203,6 +203,10 @@ public class ValUtil{
 			return null;
 		}
 		return DateUtil.parseDate(value,format);
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(getDate("2018-10-24 19:23:39.583"));
 	}
 	public static String getDateStr(Object input,String format){
 		if(input==null){
