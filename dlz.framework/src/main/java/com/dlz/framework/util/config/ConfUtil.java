@@ -15,6 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.db.modal.ParaMap;
@@ -71,25 +74,36 @@ public class ConfUtil{
 			String[] configs=CONFIG_FILE.split(",");
 			props.clear();
 			for(String config:configs){
-				URL resource = ConfUtil.class.getClassLoader().getResource(config);
-				if(resource==null){
-					continue;
-				}
+				
+				ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+				Resource[] rs=resourcePatternResolver.getResources("classpath*:"+config);
+				
 				boolean isProperties=config.endsWith(".properties");
-				final Properties properties = new Properties();
-				String filePath = resource.getFile();
-				if(filePath.indexOf(".jar!")>-1) {
-					InputStream stream = resource.openStream();
+				Resource fileR=null;
+				for(Resource r:rs){
+					if(r.isFile()){
+						fileR=r;
+						continue;
+					}
+					
+					final Properties properties = new Properties();
+					InputStream stream = r.getInputStream();
 					properties.load(stream);
 					stream.close();
-				}else {
-					InputStream file = new FileInputStream(filePath);
+					final Set<Entry<Object, Object>> entrySet = properties.entrySet();
+					for(Entry<Object, Object> e:entrySet){
+						props.put((String)e.getKey(),isProperties?e.getValue():new String(e.getValue().toString().getBytes("ISO-8859-1"),"UTF-8"));
+					}
+				}
+				if(fileR!=null){
+					InputStream file = new FileInputStream(fileR.getFile());
+					final Properties properties = new Properties();
 					properties.load(file);
 					file.close();
-				}
-				final Set<Entry<Object, Object>> entrySet = properties.entrySet();
-				for(Entry<Object, Object> e:entrySet){
-					props.put((String)e.getKey(),isProperties?e.getValue():new String(e.getValue().toString().getBytes("ISO-8859-1"),"UTF-8"));
+					final Set<Entry<Object, Object>> entrySet = properties.entrySet();
+					for(Entry<Object, Object> e:entrySet){
+						props.put((String)e.getKey(),isProperties?e.getValue():new String(e.getValue().toString().getBytes("ISO-8859-1"),"UTF-8"));
+					}
 				}
 			}
 			String fromdbSetting=props.getStr("fromdbSetting","key.setting.getSettings");
