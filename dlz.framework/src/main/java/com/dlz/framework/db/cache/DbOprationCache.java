@@ -1,5 +1,6 @@
 package com.dlz.framework.db.cache;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.dlz.framework.cache.AbstractCache;
@@ -11,6 +12,7 @@ import com.dlz.framework.db.modal.Page;
  */
 @SuppressWarnings("rawtypes")
 @Component
+@Lazy
 public class DbOprationCache extends AbstractCache<String, Page> {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	public DbOprationCache() {

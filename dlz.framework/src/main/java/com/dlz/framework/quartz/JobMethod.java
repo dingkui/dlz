@@ -14,10 +14,11 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.dlz.framework.exception.CodeException;
-import org.slf4j.Logger;
 import com.dlz.framework.quartz.bean.ScheduleJob;
 import com.dlz.framework.quartz.bean.ScheduleJobCron;
 import com.dlz.framework.quartz.bean.ScheduleJobSimple;
@@ -28,6 +29,7 @@ import com.dlz.framework.quartz.bean.ScheduleJobSimple;
  * @author xiaohe
  */
 @Component
+@Lazy
 public class JobMethod {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(JobMethod.class);

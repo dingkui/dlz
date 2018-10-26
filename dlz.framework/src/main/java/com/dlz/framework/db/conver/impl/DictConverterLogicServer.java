@@ -1,6 +1,8 @@
 package com.dlz.framework.db.conver.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.dlz.framework.db.cache.DictCache;
@@ -11,9 +13,11 @@ import com.dlz.framework.db.exception.DbException;
 import org.slf4j.Logger;
 
 @Component
+@Lazy
 class DictConverterLogicServer implements ILogicServer<Object,String> {
 	private static Logger logger =org.slf4j.LoggerFactory.getLogger(DictConverterLogicServer.class);
 	@Autowired
+	@Nullable
 	DictCache dictCache;
 
 	@Override

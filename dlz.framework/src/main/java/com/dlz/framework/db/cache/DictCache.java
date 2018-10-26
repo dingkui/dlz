@@ -3,6 +3,7 @@ package com.dlz.framework.db.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.dlz.framework.bean.JSONMap;
@@ -14,6 +15,7 @@ import com.dlz.framework.db.modal.ParaMap;
 import org.slf4j.Logger;
 
 @Component
+@Lazy
 public class DictCache extends AbstractCache<String, Dict>{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	protected final Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());

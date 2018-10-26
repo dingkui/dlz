@@ -34,6 +34,7 @@ public abstract class AbstractCache<KEY,T>{
 	@Nullable
 	public ICommService commService;
 	@Autowired
+	@Nullable
 	private ICacheCreator cacheCreator;
 	
 	@SuppressWarnings("rawtypes")

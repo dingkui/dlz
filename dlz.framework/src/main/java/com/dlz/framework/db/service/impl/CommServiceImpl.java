@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.dlz.framework.bean.JSONMap;
@@ -29,6 +30,7 @@ import com.dlz.framework.util.ValUtil;
 @Service 
 @SuppressWarnings("unchecked")
 @DependsOn("dbInfo")
+@Lazy
 public class CommServiceImpl implements ICommService {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(CommServiceImpl.class);
