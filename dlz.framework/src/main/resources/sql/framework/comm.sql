@@ -45,6 +45,17 @@
  	]]>
  	</sql>
  	
+ 	<sql sqlId="key.comm.pageSql.sqlserver"><![CDATA[
+		SELECT * FROM (
+		  SELECT row_number() OVER(ORDER BY _tpc) rownum_,a2.* FROM(
+		    SELECT TOP ${page.end} _tpc=null,a1.* FROM (
+		    	${_sql}
+		    ) a1[ order by ${page.orderBy}]
+		  ) a2
+		)a3 WHERE rownum_ > ${page.begin}
+ 	]]>
+ 	</sql>
+ 	
  	<sql sqlId="key.comm.pageSql.postgresql"><![CDATA[
 	 ${_sql} [ ORDER BY ${page.orderBy} ] [ LIMIT [#{page.pageSize}] OFFSET #{page.begin} ]
  	]]>
