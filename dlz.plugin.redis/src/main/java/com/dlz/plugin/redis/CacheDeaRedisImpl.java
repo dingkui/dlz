@@ -51,10 +51,15 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 //			client.hget(SafeEncoder.encode(name), SafeEncoder.encode(key.toString()));
 			client.get(SafeEncoder.encode(name+key.toString()));
 			final byte[] result = client.getBinaryBulkReply();
-			if (null != result) {
-				return (Serializable)SerializeUtil.deserialize(result);
-			} else {
-				return null;
+			try{
+				if (null != result) {
+					return (Serializable)SerializeUtil.deserialize(result);
+				} else {
+					return null;
+				}
+			}finally{
+				client.close();
+				resource.close();
 			}
 		}
 		
@@ -69,12 +74,16 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 				client.set(SafeEncoder.encode(name+key.toString()), SerializeUtil.serialize(value));
 			}
 			client.getBinaryBulkReply();
+			client.close();
+			resource.close();
 		}
 
 		@Override
 		public void remove(Serializable key) {
 //			jedisSentinelPool.getResource().hdel(name,key.toString());
-			jedisSentinelPool.getResource().del(name+key.toString());
+			final Jedis resource = jedisSentinelPool.getResource();
+			resource.del(name+key.toString());
+			resource.close();
 		}
 
 		@Override
@@ -82,7 +91,9 @@ public class CacheDeaRedisImpl implements ICacheCreator {
 //			jedisSentinelPool.getResource().del(name);
 			if(name.length()>=0){
 				final Set<String> keys = jedisSentinelPool.getResource().keys(name+"*");
-				jedisSentinelPool.getResource().del((String[])keys.toArray());
+				final Jedis resource = jedisSentinelPool.getResource();
+				resource.del((String[])keys.toArray());
+				resource.close();
 			}else{
 				logger.warn("redis _global cache can't removeAll");
 			}
