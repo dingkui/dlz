@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -12,6 +13,18 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+  public static String join(CharSequence separator, Iterable<?> strings) {
+    Iterator<?> i = strings.iterator();
+    if (!i.hasNext()) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder(i.next().toString());
+    while (i.hasNext()) {
+      sb.append(separator);
+      sb.append(i.next().toString());
+    }
+    return sb.toString();
+  }
 	public static String NVL(String cs) {
 		return NVL(cs, "");
 	}
