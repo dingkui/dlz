@@ -1,5 +1,6 @@
 package com.dlz.framework.db.mySequence;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -57,6 +58,10 @@ public class SequenceDeal{
 					if(bo==null){
 						bo=new SequenceBo();
 						bo.setName(seqName);
+						bo.setMin(1L);
+						bo.setMax(Long.MAX_VALUE);
+						bo.setStep(1L);
+						bo.setCt(new Date());
 						seqDao.createSequence(bo);
 					}
 					valCounter=new AtomicLong(bo.getVal());
