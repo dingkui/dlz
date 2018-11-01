@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -151,13 +152,21 @@ public class ValUtil{
 			return null;
 		}
 		if (input instanceof List) {
-			final List input2 = (List)input;
-			if(input2.size()==0 || (input2.size()>0 &&clazz.isAssignableFrom(input2.get(0).getClass()))){
-				return (List<T>)input2;
+			boolean isClass=true;
+			final Iterator input2 = ((Collection)input).iterator();
+			while(input2.hasNext()){
+				final Object next = input2.next();
+				if(!clazz.isAssignableFrom(next.getClass())){
+					isClass=false;
+					break;
+				}
+			}
+			if(isClass){
+				return (List)input;
 			}
 		}
 		try{
-			return (List<T>)new JSONList(input,clazz);
+			return (List)new JSONList(input,clazz);
 		}catch(CodeException e){
 			logger.warn(e.getMessage());
 		}
@@ -229,14 +238,23 @@ public class ValUtil{
 			return null;
 		}
 		if (input instanceof Collection){
-			input=(Object[])((Collection)input).toArray();
+			final List listObj = getListObj(input, clazz);
+			return Arrays.copyOf(listObj.toArray(), listObj.size(),clazzs);
 		}
 		
 		if(input instanceof Object[]) {
-			 Object[] g=(Object[])input;
-			 if(g.length==0||(g.length>0 && clazz.isAssignableFrom(g[0].getClass()))){
-				 return Arrays.copyOf(g, g.length,clazzs);
-			 }
+			boolean isClass=true;
+			
+			Object[] g=(Object[])input;
+			for (int i = 0; i < g.length; i++) {
+				if(!clazz.isAssignableFrom(g[i].getClass())){
+					isClass=false;
+					break;
+				}
+			}
+			if(isClass){
+				return Arrays.copyOf(g, g.length,clazzs);
+			}
 		}
 		try{
 			String string=null;

@@ -3,11 +3,13 @@ package com.dlz.framework.bean;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.dlz.framework.exception.CodeException;
 import com.dlz.framework.exception.SystemException;
 import com.dlz.framework.util.JacksonUtil;
+import com.dlz.framework.util.ValUtil;
 
 /**
  * JSONList
@@ -37,9 +39,32 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 			return;
 		}
 		if(obj instanceof Collection){
-			addAll((Collection)obj);
+			if(objectClass!=null){
+				final Iterator input2 = ((Collection)obj).iterator();
+				while(input2.hasNext()){
+					final Object next = input2.next();
+					if(objectClass.isAssignableFrom(next.getClass())){
+						add(next);
+					}else{
+						add(ValUtil.getObj(next, objectClass));
+					}
+				}
+			}else{
+				addAll((Collection)obj);
+			}
 		}else if(obj instanceof Object[]){
-			Collections.addAll(this, (Object[])obj);
+			if(objectClass!=null){
+				final Object[] input2 = (Object[])obj;
+				for (int i = 0; i < input2.length; i++) {
+					if(objectClass.isAssignableFrom(input2[i].getClass())){
+						add(input2[i]);
+					}else{
+						add(ValUtil.getObj(input2[i], objectClass));
+					}
+				}
+			}else{
+				Collections.addAll(this, (Object[])obj);
+			}
 		}else {
 			String string=null;
 			if(obj instanceof CharSequence){
