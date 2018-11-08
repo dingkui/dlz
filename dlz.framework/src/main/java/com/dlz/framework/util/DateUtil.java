@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 
@@ -137,7 +138,7 @@ public class DateUtil {
 	 * getDateStr get a string with format YYYY-MM-DD from a Date object
 	 * 
 	 * @param date
-	 *            date
+	 *          date
 	 * @return String
 	 */
 	static public String getDateStr(Date date) {
@@ -164,11 +165,10 @@ public class DateUtil {
 	}
 
 	/**
-	 * getDateStr get a string with format YYYY-MM-DD HH:mm:ss from a Date
-	 * object
+	 * getDateStr get a string with format YYYY-MM-DD HH:mm:ss from a Date object
 	 * 
 	 * @param date
-	 *            date
+	 *          date
 	 * @return String
 	 */
 	static public String getDateTimeStr(Date date) {
@@ -207,6 +207,17 @@ public class DateUtil {
 		return cDate;
 	}
 
+	public static Date parseUTCData(String dataVal) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		// 设置时区UTC
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		try {
+			return formatter.parse(dataVal);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * @author penghao 根据出生日期计算年龄
 	 */
@@ -223,7 +234,7 @@ public class DateUtil {
 	 * Parses text in 'YYYY-MM-DD' format to produce a date.
 	 * 
 	 * @param s
-	 *            the text
+	 *          the text
 	 * @return Date
 	 * @throws ParseException
 	 */
@@ -275,7 +286,7 @@ public class DateUtil {
 	 * Parses text in 'YYYY-MM-DD' format to produce a date.
 	 * 
 	 * @param s
-	 *            the text
+	 *          the text
 	 * @return Date
 	 * @throws ParseException
 	 */
@@ -292,7 +303,7 @@ public class DateUtil {
 	 * Parses text in 'YYYY-MM-DD' format to produce a date.
 	 * 
 	 * @param s
-	 *            the text
+	 *          the text
 	 * @return Date
 	 * @throws ParseException
 	 */
@@ -320,7 +331,7 @@ public class DateUtil {
 	 * Parses text in 'HH:mm:ss' format to produce a time.
 	 * 
 	 * @param s
-	 *            the text
+	 *          the text
 	 * @return Date
 	 * @throws ParseException
 	 */
@@ -367,9 +378,9 @@ public class DateUtil {
 	 * Get the total month from two date.
 	 * 
 	 * @param sd
-	 *            the start date
+	 *          the start date
 	 * @param ed
-	 *            the end date
+	 *          the end date
 	 * @return int month form the start to end date
 	 * @throws ParseException
 	 */
@@ -413,9 +424,9 @@ public class DateUtil {
 	 * Get first day of the month.
 	 * 
 	 * @param year
-	 *            the year
+	 *          the year
 	 * @param month
-	 *            the month
+	 *          the month
 	 * @return Date first day of the month.
 	 * @throws ParseException
 	 */
@@ -457,7 +468,7 @@ public class DateUtil {
 	 * getToday get todat string with format YYYY-MM-DD from a Date object
 	 * 
 	 * @param date
-	 *            date
+	 *          date
 	 * @return String
 	 */
 	static public String getTodayStr() throws ParseException {
@@ -640,11 +651,11 @@ public class DateUtil {
 
 	/**
 	 * @param origin
-	 *            目标日志
+	 *          目标日志
 	 * @param filed
-	 *            Calendar.DAY_OF_YEAR
+	 *          Calendar.DAY_OF_YEAR
 	 * @param amount
-	 *            值
+	 *          值
 	 * @return
 	 */
 	public static Date add(Date origin, int field, int amount) {
@@ -659,7 +670,7 @@ public class DateUtil {
 	 * 
 	 * @param date
 	 * @param i
-	 *            要增加的月数
+	 *          要增加的月数
 	 * @return
 	 */
 	public static Date addMonths(Date date, int i) {
@@ -674,7 +685,7 @@ public class DateUtil {
 	 * 
 	 * @param date
 	 * @param i
-	 *            要增加的天数
+	 *          要增加的天数
 	 * @return
 	 */
 	public static Date addDays(Date date, int i) {
