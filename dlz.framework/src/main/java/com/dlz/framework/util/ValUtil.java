@@ -206,8 +206,9 @@ public class ValUtil{
 			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
 			String hole = nowYMD + " " + value;
 			return DateUtil.parseData(hole, "yyyy-MM-dd HH:mm:ss");
+		}else if(value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}.\\d{3}Z$")){
+			 return DateUtil.parseUTCData(value);
 		}
-		
 		if(format==null){
 			return null;
 		}
