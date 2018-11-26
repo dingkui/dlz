@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import com.dlz.framework.util.JacksonUtil;
 import com.dlz.framework.util.ValUtil;
 
-@Service 
+@Service
 @SuppressWarnings("unchecked")
 @DependsOn("dbInfo")
 @Lazy
@@ -63,10 +63,6 @@ public class CommServiceImpl implements ICommService {
 		return daoOperator.getSeq(seqName);
 	}
 	
-	@Override
-	public long getSeqWithTime(String seqName) {
-		return daoOperator.getSeqWithTime(seqName);
-	}
 	@Override
 	public int getCnt(BaseParaMap paraMap) {
 		String key=null;

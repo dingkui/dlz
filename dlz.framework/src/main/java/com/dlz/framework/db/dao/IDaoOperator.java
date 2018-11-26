@@ -18,8 +18,6 @@ public interface IDaoOperator  {
 
 	long getSeq(String seqName);
 	
-	long getSeqWithTime(String seqName);
-
 	List<ResultMap> getList(BaseParaMap paraMap);
 
 	int getCnt(BaseParaMap paraMap);

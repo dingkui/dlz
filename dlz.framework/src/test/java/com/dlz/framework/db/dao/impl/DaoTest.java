@@ -19,12 +19,6 @@ public class DaoTest implements IDaoOperator {
 	public long getSeq(String seqName) {
 		return 1l;
 	}
-
-	@Override
-	public long getSeqWithTime(String seqName) {
-		return 1l;
-	}
-
 	
 	@Override
 	public List<ResultMap> getList(BaseParaMap paraMap) {

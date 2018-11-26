@@ -91,7 +91,6 @@ public interface ICommService {
 	<T> Page<T> getPage(String sql, Class<T> t,int pageSize,int pageIndex, Object ... para);
 	Page<ResultMap> getPage(String sql, int pageSize,int pageIndex, Object ... para);
 	
-	long getSeqWithTime(String seqName);
 	long getSeq(String seqName);
 	long getSeq(Class<?> clazz);
 

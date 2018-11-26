@@ -4,9 +4,6 @@
 	<select id="getSeq" resultType="long" parameterType="string">
 		select ${value}.NEXTVAL from DUAL
 	</select>
-	<select id="getWithTimeSeq" resultType="long" parameterType="string">
-		SELECT TO_NUMBER(TO_CHAR(sysdate, 'YYYYMMDDHH24MISS')) * 100000 + ${value}.NEXTVAL FROM DUAL
-	</select>
 	<select id="getList" resultType="com.dlz.framework.db.modal.ResultMap" parameterType="com.dlz.framework.db.modal.BaseParaMap">
 		${sql_page}
 	</select>

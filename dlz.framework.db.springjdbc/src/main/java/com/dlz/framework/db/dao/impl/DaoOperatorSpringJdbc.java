@@ -62,16 +62,6 @@ public class DaoOperatorSpringJdbc implements IDaoOperator {
 	}
 	
 	@Override
-	public long getSeqWithTime(String seqName) {
-		seqName = seqName.toUpperCase();
-		String sql = "SELECT TO_NUMBER(TO_CHAR(sysdate, 'yymmdd')) * 100000000000 + SEQ_" + seqName + ".NEXTVAL FROM DUAL";
-		if (seqName.startsWith("S_") || seqName.startsWith("SEQ_")) {
-			sql = "SELECT TO_NUMBER(TO_CHAR(sysdate, 'yymmdd')) * 100000000000 + " + seqName + ".NEXTVAL FROM DUAL";
-		}
-		return jdbcTemplate.queryForObject(sql, Long.class);
-	}
-	
-	@Override
 	public List<ResultMap> getList(BaseParaMap paraMap) {
 		SqlUtil.dealParmToJdbc(paraMap, paraMap.getSql_page());
 		if(logger.isInfoEnabled()){
