@@ -3,7 +3,6 @@ package com.dlz.framework.util.config;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,10 +13,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.stereotype.Component;
 
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.db.modal.ParaMap;
@@ -25,7 +29,9 @@ import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
 
-
+@Component
+@DependsOn("commServiceImpl")
+@Lazy
 public class ConfUtil{
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConfUtil.class);
 	
@@ -49,17 +55,6 @@ public class ConfUtil{
 	public static JSONMap lists = new JSONMap();
 
 	/**
-	 * 构造方法
-	 */
-	private ConfUtil() {
-
-	}
-
-	static {
-		loadProperty();
-	}
-	
-	/**
 	 * 从配置文件中读取所有的属性
 	 */
 	public static void loadProperty(String config) {
@@ -69,6 +64,7 @@ public class ConfUtil{
 	/**
 	 * 从配置文件中读取所有的属性
 	 */
+	@PostConstruct
 	public static void loadProperty() {
 		try {
 			String[] configs=CONFIG_FILE.split(",");

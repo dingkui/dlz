@@ -2,6 +2,9 @@ package com.dlz.framework.holder;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -17,6 +20,7 @@ import com.dlz.framework.util.StringUtils;
  */
 public class SpringHolder{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
+	private static Logger logger=LoggerFactory.getLogger(SpringHolder.class);
 	private static ConfigurableListableBeanFactory beanFactory;
 	public static void init(){
 		init("*");
@@ -71,7 +75,12 @@ public class SpringHolder{
 	 */
 	public static <T> T getBean(Class<T> clazz) {
 		checkApplicationContext();
-		return (T) beanFactory.getBean(clazz);
+		try{
+			return (T) beanFactory.getBean(clazz);
+		}catch (NoSuchBeanDefinitionException e) {
+			logger.warn("NoSuchBeanDefinition"+clazz.getName());
+			return null;
+		}
 	}
 	/**
 	 * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.

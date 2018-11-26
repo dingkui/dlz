@@ -44,7 +44,6 @@ public class DbInfo {
 	private final static String STR_SQL_FOLDER = "sqllist.sql.folder.";
 	private final static String STR_DBTYPE = "dbtype";
 	private final static String STR_COLUMNMAPPER = "columnmapper";
-	private final static String STR_PARACOVER = "paracover";
 	private static Map<String, String> m_dbset = new HashMap<String, String>();
 	private static Map<String, String> m_sqlList = new HashMap<String, String>();
 	private static SqlDialect dialect = SqlDialect.ORACLE;
@@ -268,7 +267,9 @@ public class DbInfo {
 
 	public static void reload() {
 		dbConfig = null;
-		DbCoverUtil.paraCover.clear();
+		if(DbCoverUtil.paraCover!=null){
+			DbCoverUtil.paraCover.clear();
+		}
 		m_sqlList.clear();
 		try {
 			init();
