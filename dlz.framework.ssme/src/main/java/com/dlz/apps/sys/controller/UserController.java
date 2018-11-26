@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dlz.apps.ControllerConst;
+import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ParaMap;
 import com.dlz.framework.db.service.ICommService;
-import org.slf4j.Logger;
 import com.dlz.framework.ssme.base.controller.BaseController;
 import com.dlz.framework.ssme.constants.Constants;
 import com.dlz.framework.ssme.db.model.Role;
@@ -44,8 +46,6 @@ import com.dlz.framework.util.JacksonUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
-import net.sf.json.JSONObject;
 
 /**
  * 用户控制器类 方法上的注释为页面中Button的标题
@@ -180,13 +180,10 @@ public class UserController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUserInfo/{userId}")
-	public JSONObject getUserInfo(@PathVariable("userId") Long userId) {
+	public JSONMap getUserInfo(@PathVariable("userId") Long userId) {
 		try {
 			User u = userService.selectByPrimaryKey(userId);
-	    JSONObject userJsonObj = JacksonUtil.readValue(JacksonUtil.getJson(u), JSONObject.class);
-	    JSONObject mergeJsonObj = new JSONObject();
-	    mergeJsonObj.putAll(userJsonObj);
-	    return mergeJsonObj;
+			return new JSONMap(u);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;
