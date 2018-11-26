@@ -1,6 +1,7 @@
 package com.dlz.app.uim.holder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.dlz.app.uim.bean.AuthUser;
@@ -9,6 +10,7 @@ import com.dlz.framework.util.ValUtil;
 import com.dlz.web.holder.ThreadHolder;
 
 @Component
+@Lazy
 public class DefaultUserHolderDeal implements IUserHolderDeal {
 	@Autowired
 	private AuthUserCache membercache;

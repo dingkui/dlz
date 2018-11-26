@@ -1,6 +1,7 @@
 package com.dlz.app.sys.apiLogic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.dlz.app.sys.service.IDictService;
@@ -20,6 +21,7 @@ import com.dlz.web.logic.AuthedCommLogic;
  */
 @Service
 @AnnoAuth("admin")
+@Lazy
 public class DictApiLogic extends AuthedCommLogic{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());

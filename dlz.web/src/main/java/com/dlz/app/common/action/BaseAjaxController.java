@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,16 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.dlz.app.uim.bean.AuthUser;
 import com.dlz.app.uim.holder.UserHolder;
-import com.dlz.app.uim.service.IUimAuthService;
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.bean.JSONResult;
 import com.dlz.web.inf.IApiAjax;
 import com.dlz.web.util.ApiUtil;
 
 public abstract class BaseAjaxController implements IApiAjax{
-	@Autowired
-	protected IUimAuthService authService;
-	
 	public <T extends AuthUser> T getAuthInfo(){
 		return UserHolder.getAuthInfo();
 	}

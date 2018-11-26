@@ -3,6 +3,7 @@ package com.dlz.app.sys.apiLogic;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.dlz.app.sys.service.IBaseSetService;
@@ -25,6 +26,7 @@ import com.dlz.web.logic.AuthedCommLogic;
  */
 @Service
 @AnnoAuth("admin")
+@Lazy
 public class BaseSetApiLogic extends AuthedCommLogic{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	@Autowired
@@ -66,7 +68,7 @@ public class BaseSetApiLogic extends AuthedCommLogic{
 		String baseCode = data.getStr("baseCode");
 		if(modalType == 0){
 			JSONMap jsonMap = new JSONMap();
-			jsonMap.add("baseCode", data.getStr("baseCode"));
+			jsonMap.add("baseCode", baseCode);
 			if(baseSetService.searchMap("key.baseset.list", jsonMap) != null){
 				return result.addErr("编码已存在,请重新录入");
 			}
@@ -81,7 +83,7 @@ public class BaseSetApiLogic extends AuthedCommLogic{
 			UpdateParaMap uParaMap = new UpdateParaMap("t_b_base_set");
 			uParaMap.addSetValue("base_value", data.getStr("baseValue"));
 			uParaMap.addSetValue("remarks", data.getStr("remarks"));
-			uParaMap.addEqCondition("base_code", data.getStr("baseCode"));
+			uParaMap.addEqCondition("base_code", baseCode);
 			commService.excuteSql(uParaMap);
 		}
 		return result.addData("操作成功");

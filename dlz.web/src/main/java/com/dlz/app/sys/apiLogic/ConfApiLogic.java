@@ -3,6 +3,7 @@ package com.dlz.app.sys.apiLogic;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.dlz.app.uim.annotation.AnnoAuth;
@@ -17,6 +18,7 @@ import com.dlz.web.logic.AuthedCommLogic;
  */
 @Service
 @AnnoAuth("admin")
+@Lazy
 @SuppressWarnings("rawtypes")
 public class ConfApiLogic extends AuthedCommLogic{
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}

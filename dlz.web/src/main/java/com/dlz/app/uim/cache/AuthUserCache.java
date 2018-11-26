@@ -1,6 +1,7 @@
 package com.dlz.app.uim.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.dlz.app.uim.bean.AuthUserWithInfo;
@@ -19,6 +20,7 @@ import com.dlz.framework.exception.CodeException;
  * @version 1.0
  */
 @Component
+@Lazy
 public class AuthUserCache extends AbstractCache<Long, AuthUserWithInfo>{
 	@Autowired
 	public IUimMemberService memberService;
