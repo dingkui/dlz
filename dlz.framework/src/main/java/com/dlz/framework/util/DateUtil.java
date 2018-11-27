@@ -5,6 +5,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -727,6 +733,62 @@ public class DateUtil {
 			long years = toYears(delta);
 			return (years <= 0 ? 1 : years) + ONE_YEAR_AGO;
 		}
+	}
+	
+	/** 
+	* @Title: getWeekFirst 
+	* @Description: 获取当前日期所在周的第一天 
+	* @param @param inputDate 
+	* @param @param pattern
+	* @throws 
+	*/
+	public static String getWeekFirst(LocalDateTime inputDate,String pattern) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime ofnow = LocalDateTime.of(inputDate.getYear(), inputDate.getMonth(), inputDate.getDayOfMonth(), 0, 0, 0);
+		// 本周第一天
+		TemporalAdjuster FIRST_OF_WEEK = TemporalAdjusters.ofDateAdjuster(localDate -> localDate.minusDays(localDate.getDayOfWeek().getValue() - DayOfWeek.MONDAY.getValue()));
+		return df.format(ofnow.with(FIRST_OF_WEEK));
+	}
+	
+	/** 
+	* @Title: getWeekFirst 
+	* @Description: 获取当前日期所在周的最后一天
+	* @param @param inputDate 
+	* @param @param pattern
+	* @throws 
+	*/
+	public static String getWeekLast(LocalDateTime inputDate,String pattern) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime ofnow = LocalDateTime.of(inputDate.getYear(), inputDate.getMonth(), inputDate.getDayOfMonth(), 23, 59, 59);
+		// 本周最后一天
+		TemporalAdjuster LAST_OF_WEEK = TemporalAdjusters.ofDateAdjuster(localDate -> localDate.plusDays(DayOfWeek.SUNDAY.getValue() - localDate.getDayOfWeek().getValue()));
+		return df.format(ofnow.with(LAST_OF_WEEK));
+	}
+	
+	/** 
+	* @Title: getWeekFirst 
+	* @Description: 获取当前日期所在月份的第一天
+	* @param @param inputDate 
+	* @param @param pattern
+	* @throws 
+	*/
+	public static String getMonthFirst(LocalDateTime inputDate, String pattern) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime ofnow = LocalDateTime.of(inputDate.getYear(), inputDate.getMonth(), inputDate.getDayOfMonth(), 0, 0, 0);
+		return df.format(ofnow.with(TemporalAdjusters.firstDayOfMonth()));
+	}
+	
+	/** 
+	* @Title: getWeekFirst 
+	* @Description: 获取当前日期所在月份的最后一天
+	* @param @param inputDate 
+	* @param @param pattern
+	* @throws 
+	*/
+	public static String getMonthLast(LocalDateTime inputDate, String pattern) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime ofnow = LocalDateTime.of(inputDate.getYear(), inputDate.getMonth(), inputDate.getDayOfMonth(), 23, 59, 59);
+		return df.format(ofnow.with(TemporalAdjusters.lastDayOfMonth()));
 	}
 
 	private static long toSeconds(long date) {
