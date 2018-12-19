@@ -110,6 +110,9 @@ public class MemberApiLogic extends AuthedCommLogic{
 		int pageSize = data.getInt("pageSize");
 		data.remove("pageIndex");
 		data.remove("pageSize");
+		if(!StringUtils.isEmpty(data.getStr("dId"))){
+			data.put("dId", data.getInt("dId"));
+		}
 		return r.addData(memberService.mapPageByPara(new Page<>(pageIndex, pageSize),new JSONMap(data)));
 	}
 	/**

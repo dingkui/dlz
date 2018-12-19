@@ -36,7 +36,25 @@ public class DeptApiLogic extends NoAuthCommLogic{
 	 */
 	public JSONResult getDeptList(JSONMap data){
 		JSONResult r = JSONResult.createResult();
-		return r.addData(getDepts("0"));
+		String ddCorpid = data.getStr("ddCorpid");
+		if(StringUtils.isEmpty(ddCorpid)){
+			return r.addData(getDepts("0"));
+		}else{
+			return r.addData(getDepts("0",ddCorpid));
+		}
+	}
+	
+	private List<ResultMap> getDepts(String parentId,String ddCorpid){
+		List<ResultMap> resultMapList = deptService.searchMapList(new JSONMap("d_fid",parentId,"ddCorpid",ddCorpid));
+		if(resultMapList.size()>0){
+			resultMapList.parallelStream().forEach((res)->{
+				List<ResultMap> sub=getDepts(res.getStr("dId"));
+				if(sub.size()>0){
+					res.add("children", sub);
+				}
+			});
+		}
+		return resultMapList;
 	}
 	
 	private List<ResultMap> getDepts(String parentId){
