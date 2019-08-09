@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.dlz</groupId>
+		<artifactId>dlz.parent</artifactId>
+		<version>2.2</version>
+	</parent>
+	<artifactId>dlz.web.parent</artifactId>
+	<packaging>pom</packaging>
+	
+	<properties>
+		<mybatis.version>3.4.0</mybatis.version>
+		<mybatis-spring.version>1.3.0</mybatis-spring.version>
+		<dlz.framework.version>2.2</dlz.framework.version>
+	</properties>
+	
+
+	<dependencies>
+		<dependency>
+			<groupId>com.dlz</groupId>
+			<artifactId>dlz.framework</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		
+		<!--  jetty -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.2.0.v20160908</version>
+			<scope>provided</scope>
+		</dependency> 
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<version>8.2.0.v20160908</version>
+			<scope>provided</scope>
+		</dependency> 
+		<!-- jetty -->
+	</dependencies>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>dlz.web</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>dlz.framework.ssme</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>dlz.plugin.weixin</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>dlz.framework.db.sjdbc</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>sys.service</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dlz</groupId>
+				<artifactId>uim.service</artifactId>
+				<version>${dlz.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

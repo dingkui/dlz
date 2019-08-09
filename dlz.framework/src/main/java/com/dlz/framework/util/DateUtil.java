@@ -3,10 +3,8 @@ package com.dlz.framework.util;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
@@ -206,19 +204,19 @@ public class DateUtil {
 		return format.format(date);
 	}
 
-	public static Date parseData(String dataVal, String formatVal) {
-		SimpleDateFormat formatter = new SimpleDateFormat(formatVal);
-		ParsePosition pos = new ParsePosition(0);
-		Date cDate = formatter.parse(dataVal, pos);
-		return cDate;
-	}
+//	public static Date parseData(String dateVal, String formatVal) {
+//		SimpleDateFormat formatter = new SimpleDateFormat(formatVal);
+//		ParsePosition pos = new ParsePosition(0);
+//		Date cDate = formatter.parse(dateVal, pos);
+//		return cDate;
+//	}
 
-	public static Date parseUTCData(String dataVal) {
+	public static Date toUTCDate(String dateVal) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		// 设置时区UTC
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		try {
-			return formatter.parse(dataVal);
+			return formatter.parse(dateVal);
 		} catch (ParseException e) {
 			return null;
 		}
@@ -244,7 +242,7 @@ public class DateUtil {
 	 * @return Date
 	 * @throws ParseException
 	 */
-	static public Date parseDate(String s) {
+	static public Date toDate(String s) {
 		if (s == null || "".equals(s)) {
 			return null;
 		}
@@ -257,33 +255,7 @@ public class DateUtil {
 		return null;
 	}
 
-	/**
-	 * Parses from 'MM/dd/yyyy' to 'yyyy/MM/dd'
-	 * 
-	 * @param s
-	 * @return
-	 */
-	static public Date parseDateA(String s) {
-		if (s == null || "".equals(s)) {
-			return null;
-		}
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-		SimpleDateFormat new_format = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-
-		try {
-			Date date = sdf.parse(s);
-			String local_date = new_format.format(date);
-			date = new_format.parse(local_date);
-			local_date = format.format(date);
-			return format.parse(local_date);
-		} catch (ParseException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
-
-	static public Date parseDateC(String s) throws ParseException {
+	static public Date toDateC(String s) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
 		return format.parse(s);
 	}
@@ -296,7 +268,7 @@ public class DateUtil {
 	 * @return Date
 	 * @throws ParseException
 	 */
-	static public Date parseDate(String s, String format) {
+	static public Date toDate(String s, String format) {
 		try {
 			return new SimpleDateFormat(format).parse(s);
 		} catch (ParseException e) {
@@ -313,7 +285,7 @@ public class DateUtil {
 	 * @return Date
 	 * @throws ParseException
 	 */
-	static public Date parseDateTime(String s) {
+	static public Date toDateTime(String s) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			return format.parse(s);
@@ -323,7 +295,7 @@ public class DateUtil {
 		return null;
 	}
 
-	static public Date parseDateTimeC(String s) {
+	static public Date toDateTimeC(String s) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
 		try {
 			return format.parse(s);
@@ -341,12 +313,12 @@ public class DateUtil {
 	 * @return Date
 	 * @throws ParseException
 	 */
-	static public Date parseTime(String s) throws ParseException {
+	static public Date toTime(String s) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 		return format.parse(s);
 	}
 
-	static public Date parseTimeC(String s) throws ParseException {
+	static public Date toTimeC(String s) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("HH时mm分ss秒");
 		return format.parse(s);
 	}

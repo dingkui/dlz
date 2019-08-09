@@ -1,6 +1,5 @@
 package com.dlz.framework.util;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -127,52 +126,6 @@ public class DateUtilSecond {
 	    //logger.debug(day1 + "," + day2);
 		return day2 - day1;
 	 }
-	/**
-	 * 将一个字符串转换成日期格式
-	 * @param date
-	 * @param pattern
-	 * @return
-	 */
-	public static Date toDate(String date, String pattern) {
-		if((""+date).equals("")){
-			return null;
-		}
-		if(pattern == null){
-			pattern = "yyyy-MM-dd";
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-		Date newDate = new Date();
-		try {
-			newDate = sdf.parse(date);
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return newDate;
-	}
-	
-	/**
-	 * 把日期转换成字符串型
-	 * @param date
-	 * @param pattern
-	 * @return
-	 */
-	public static String toString(Date date, String pattern){
-		if(date == null){
-			return "";
-		}
-		if(pattern == null){
-			pattern = "yyyy-MM-dd";
-		}
-		String dateString = "";
-		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-		try {
-			dateString = sdf.format(date);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return dateString;
-	}
 	
 	public static String toString(Long time,String pattern){
 		if(time>0){
@@ -180,7 +133,7 @@ public class DateUtilSecond {
 				time = time*1000;
 			}
 			Date date = new Date(time);
-			String str  = DateUtilSecond.toString(date, pattern);
+			String str  = DateUtil.getDateStr(date, pattern);
 			return str;
 		}
 		return "";
@@ -245,7 +198,7 @@ public class DateUtilSecond {
 	public static Long[] getTargetDateStartAndEndTime(Date date){
 		Long[] arr = new Long[2];
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(DateUtilSecond.toDate(DateUtilSecond.toString(date, "yyyy-MM-dd"), "yyyy-MM-dd"));
+		cal.setTime(date);
 		cal.set(Calendar.DAY_OF_MONTH, 1);//当前月第一天
 		arr[0] = cal.getTimeInMillis()/1000;
 		cal.add(Calendar.MONTH, 1);//下个月
@@ -262,12 +215,12 @@ public class DateUtilSecond {
 	 * @return
 	 */
 	public static String addDayToTargetDate(String dataStr,String format,Integer num){
-		Date date = DateUtilSecond.toDate(dataStr, format);
+		Date date = DateUtil.toDate(dataStr, format);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.DAY_OF_MONTH, num);
 		date = calendar.getTime();
-		return DateUtilSecond.toString(date, format);
+		return DateUtil.getDateStr(date, format);
 	}
 	
 	/**
@@ -318,13 +271,13 @@ public class DateUtilSecond {
 		return System.currentTimeMillis()/1000;
 	}
 	public static long getDateline(String date){
-		return (long)(toDate(date, "yyyy-MM-dd").getTime()/1000);
+		return (long)(DateUtil.toDate(date, "yyyy-MM-dd").getTime()/1000);
 	}
 	public static long getDateHaveHour(String date){
-		return (long)(toDate(date, "yyyy-MM-dd HH").getTime()/1000);
+		return (long)(DateUtil.toDate(date, "yyyy-MM-dd HH").getTime()/1000);
 	}
 	public static long getDateline(String date,String pattern){
-		return (long)(toDate(date, pattern).getTime()/1000);
+		return (long)(DateUtil.toDate(date, pattern).getTime()/1000);
 	}
 	
 	public static String getCurrentTimeDistance(Long time){

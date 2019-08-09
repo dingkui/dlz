@@ -28,7 +28,9 @@ public enum FileTypeEnum {
 	receiptProof("23"),//发票打款凭证
 	fxs("24"),//分销商
 	orderSend("25"),//发货单
-	reserveProof("26");//发货指令单打款凭证
+	reserveProof("26"),//发货指令单打款凭证
+	authProof("27"),//订单授信附件
+	supplierInvoice("28");//供应商发票图片
 	/*
 	 * 类型ID
 	 */

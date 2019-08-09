@@ -185,34 +185,34 @@ public class ValUtil{
 		}
 		String  value = getStr(input,"").replaceAll("/", "-").replaceAll("\"", "");
 		if (value.matches("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.*")) {
-			return DateUtil.parseDateTime(value.substring(0, 18));
+			return DateUtil.toDateTime(value.substring(0, 18));
 		} else if (value.matches("^\\d{4}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒")) {
-			return DateUtil.parseDateTimeC(value);
+			return DateUtil.toDateTimeC(value);
 		} else if (value.matches("^\\d{4}-\\d{2}-\\d{2}")) {
-			return DateUtil.parseDate(value);
+			return DateUtil.toDate(value);
 		}else if (value.matches("^\\d{4}-\\d{1,2}$")) {
-			return DateUtil.parseData(value, "yyyy-MM");
+			return DateUtil.toDate(value, "yyyy-MM");
 		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
-			return DateUtil.parseData(value, "yyyy-MM-dd");
+			return DateUtil.toDate(value, "yyyy-MM-dd");
 		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")) {
-			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm");
+			return DateUtil.toDate(value, "yyyy-MM-dd HH:mm");
 		} else if (value.matches("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
-			return DateUtil.parseData(value, "yyyy-MM-dd HH:mm:ss");
+			return DateUtil.toDate(value, "yyyy-MM-dd HH:mm:ss");
 		} else if (value.matches("^\\d{1,2}:\\d{1,2}$")) {
 			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
 			String hole = nowYMD + " " + value;
-			return DateUtil.parseData(hole, "yyyy-MM-dd HH:mm");
+			return DateUtil.toDate(hole, "yyyy-MM-dd HH:mm");
 		} else if (value.matches("^\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
 			String nowYMD = DateUtil.getCurDateStr("yyyy-MM-dd");
 			String hole = nowYMD + " " + value;
-			return DateUtil.parseData(hole, "yyyy-MM-dd HH:mm:ss");
+			return DateUtil.toDate(hole, "yyyy-MM-dd HH:mm:ss");
 		}else if(value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}.\\d{3}Z$")){
-			 return DateUtil.parseUTCData(value);
+			 return DateUtil.toUTCDate(value);
 		}
 		if(format==null){
 			return null;
 		}
-		return DateUtil.parseDate(value,format);
+		return DateUtil.toDate(value,format);
 	}
 	
 	public static void main(String[] args) {

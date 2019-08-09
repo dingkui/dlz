@@ -1,4 +1,4 @@
 cd /d %~dp0
 cd ..
-call mvn clean install -Dmaven.test.skip
+call mvn -f pom-all.xml clean install -Dmaven.test.skip
 pause

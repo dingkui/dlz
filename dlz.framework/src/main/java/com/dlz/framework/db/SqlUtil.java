@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import com.dlz.framework.util.DateUtil;
 import com.dlz.framework.util.JacksonUtil;
 import com.dlz.framework.util.StringUtils;
+import com.dlz.framework.util.ValUtil;
 
 
 /**
@@ -345,14 +346,7 @@ public class SqlUtil{
 			case Blob:
 				return value.getBytes(SqlUtil.getBlobCharsetname());
 			case Date:
-				value = value.replaceAll("/", "-");
-				if (value.matches("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.*")) {
-					return DateUtil.parseDateTime(value.substring(0, 18));
-				} else if (value.matches("^\\d{4}年\\d{2}月\\d{2}日 \\d{2}时\\d{2}分\\d{2}秒")) {
-					return DateUtil.parseDateTimeC(value);
-				} else if (value.matches("^\\d{4}-\\d{2}-\\d{2}")) {
-					return DateUtil.parseDate(value);
-				}
+				return ValUtil.getDate(value);
 			default:
 				return value;
 			}

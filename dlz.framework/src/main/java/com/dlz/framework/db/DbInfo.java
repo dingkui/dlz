@@ -38,12 +38,12 @@ public class DbInfo {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(DbInfo.class);
 	private static ResourceBundle dbConfig;
-	private final static String NAME_DB_CONFIG = "sqllist";
+	private final static String NAME_DB_CONFIG = "application";
 	private final static String STR_SQL_JAR = "sqllist.sql.jar.";
 	private final static String STR_SQL_FILE = "sqllist.sql.file.";
 	private final static String STR_SQL_FOLDER = "sqllist.sql.folder.";
 	private final static String STR_DBTYPE = "dbtype";
-	private final static String STR_COLUMNMAPPER = "columnmapper";
+	private final static String STR_COLUMNMAPPER = "dbset.coverClass";
 	private static Map<String, String> m_dbset = new HashMap<String, String>();
 	private static Map<String, String> m_sqlList = new HashMap<String, String>();
 	private static SqlDialect dialect = SqlDialect.ORACLE;
