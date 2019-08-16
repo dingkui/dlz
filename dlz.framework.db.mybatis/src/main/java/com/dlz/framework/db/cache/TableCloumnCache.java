@@ -1,18 +1,10 @@
 package com.dlz.framework.db.cache;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Types;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
 import com.dlz.framework.util.ValUtil;
@@ -27,52 +19,59 @@ public class TableCloumnCache extends ATableCloumnCache {
 
 	protected final Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	JdbcTemplate jdbcTemplate;
+	
 
 	public TableCloumnCache() {
 		super(TableCloumnCache.class.getSimpleName());
 		dbOperator = new DbOperator() {
 			protected Map<String, Integer> getFromDb(String tableName) {
-				// 查询表结构定义；返回表定义Map
-				String sql = "select * from " + tableName + " limit 0";
-				ResultSetExtractor<Map<String, Integer>> extractor = new ResultSetExtractor<Map<String, Integer>>() {
-					@Override
-					public Map<String, Integer> extractData(ResultSet rs) throws SQLException, DataAccessException {
-						Map<String, Integer> infos = new HashMap<>();
-						ResultSetMetaData rsmd = rs.getMetaData();
-						int columnCount = rsmd.getColumnCount();
-						for (int i = 1; i < columnCount + 1; i++) {
-							String columnLabel = rsmd.getColumnLabel(i).toUpperCase();
-							infos.put(columnLabel, rsmd.getColumnType(i));
-						}
-						return infos;
-					}
-				};
-				return jdbcTemplate.query(sql, extractor);
+//				tableName=tableName.toUpperCase();
+//				// 查询表结构定义；返回表定义Map
+//				String sql = "select * from " + tableName + " limit 0";
+//				ResultSetExtractor<Map<String, Integer>> extractor = new ResultSetExtractor<Map<String, Integer>>() {
+//					@Override
+//					public Map<String, Integer> extractData(ResultSet rs) throws SQLException, DataAccessException {
+//						Map<String, Integer> infos = new HashMap<>();
+//						ResultSetMetaData rsmd = rs.getMetaData();
+//						int columnCount = rsmd.getColumnCount();
+//						for (int i = 1; i < columnCount + 1; i++) {
+//							String columnLabel = SqlUtil.converClumnStr2Str(rsmd.getColumnLabel(i));
+//							infos.put(columnLabel, rsmd.getColumnType(i));
+//						}
+//						return infos;
+//					}
+//				};
+//				List<Map> r = sqlSessionTemplate.selectList(sql);
+//				for(Map m : r){
+//					
+//				}
+//				return null;
+				return null;
+				
 			}
 		};
 	}
 
 	@Override
 	public Object converObj4Db(String tableName, String clumnName, Object value) {
-		Map<String, Integer> map = get(tableName);
-		if (map != null) {
-			Integer dbClass = map.get(clumnName.toUpperCase());
-			if(dbClass==null){
-				return value;
-			}
-			return cover(dbClass, value);
-		}
+//		Map<String, Integer> map = get(tableName.toUpperCase());
+//		if (map != null) {
+//			Integer dbClass = map.get(SqlUtil.converClumnStr2Str(clumnName));
+//			if(dbClass==null){
+//				return value;
+//			}
+//			return cover(dbClass, value);
+//		}
 		return value;
 	}
 	@Override
 	public boolean isClumnExists(String tableName, String clumnName) {
-		Map<String, Integer> map = get(tableName);
-		if (map == null) {
-			return false;
-		}
-		return map.containsKey(clumnName.toUpperCase());
+//		Map<String, Integer> map = get(tableName.toUpperCase());
+//		if (map == null) {
+//			return false;
+//		}
+//		return map.containsKey(SqlUtil.converClumnStr2Str(clumnName));
+		return true;
 	}
 
 	private static Object cover(Integer dbClass, Object obj) {
