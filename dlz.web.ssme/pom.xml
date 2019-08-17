@@ -80,10 +80,10 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 		</dependency>
-		<!-- <dependency>
+		 <dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-		</dependency> -->
+		</dependency> 
 
 		<!-- WEB begin -->
 		<dependency>
