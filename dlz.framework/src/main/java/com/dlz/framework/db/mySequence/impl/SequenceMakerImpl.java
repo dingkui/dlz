@@ -1,52 +1,38 @@
 package com.dlz.framework.db.mySequence.impl;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.dlz.framework.db.dao.IDaoOperator;
 import com.dlz.framework.db.mySequence.ISequenceMaker;
 import com.dlz.framework.db.mySequence.SequenceDeal;
-import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.holder.SpringHolder;
 
+/**
+ * 框架中取得sequence的方法
+ * 
+ * @author dingkui
+ *
+ * 使用方法： 
+ * 
+ 1:创建表
+  CREATE TABLE `t_sequence` (
+	 `name` varchar(128) CHARACTER SET utf8 NOT NULL COMMENT '序列名称',
+	 `val` bigint(20) NOT NULL COMMENT '目前序列值',
+	 `min` bigint(20) NOT NULL COMMENT '最小值',
+	 `max` bigint(20) NOT NULL COMMENT '最大值',
+	 `step` bigint(20) NOT NULL COMMENT '每次取值的数量',
+	 `ct` datetime NOT NULL COMMENT '创建时间',
+	 `ut` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+	 PRIMARY KEY (`name`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='流水号生成表';
+  2: spring xml中添加 
+  <bean id="sequenceMaker" class="com.dlz.framework.db.mySequence.impl.SequenceMakerImpl" lazy-init="true"/>
+ *
+ */
 public class SequenceMakerImpl implements ISequenceMaker {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	
-//	@Autowired
-//	private SequenceFactory sequenceFactory;
-//	
-//	@PostConstruct
-//	private void init() {
-//		SpringHolder.getBean(IDaoOperator.class).setSequenceMaker(this);
-//		sequenceFactory.initAll();
-//	}
-//
-//	/**
-//	 * <p>
-//	 * 获取指定sequence的序列号
-//	 * </p>
-//	 *
-//	 * @param seqName
-//	 *            sequence名
-//	 * @return String 序列号
-//	 * @author coderzl
-//	 */
-//	@Override
-//	public long nextVal(String seqName) {
-//		return sequenceFactory.getNextVal(seqName);
-//	}
-	
 	@Autowired
-	private ICommService commServiceImpl;
 	SequenceDeal sequenceDeal;
 	
-	@PostConstruct
-	private void init() {
-		SpringHolder.getBean(IDaoOperator.class).setSequenceMaker(this);
-		sequenceDeal = SequenceDeal.getSequenceDeal(commServiceImpl);
-	}
-
 	/**
 	 * 获取指定sequence的序列号
 	 * @param seqName sequence名

@@ -66,4 +66,8 @@ public class DbUtilTest {
 		cs.getMap(ump2);
 		System.out.println(ump2.getSqlRun());
 	}
+	@Test
+	public void seq(){
+		cs.getSeq("xxx");
+	}
 }

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,8 +17,6 @@ import com.dlz.framework.db.dao.IDaoOperator;
 import com.dlz.framework.db.jdbc.JdbcUtil;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.ResultMap;
-import com.dlz.framework.db.mySequence.ISequenceMaker;
-import org.slf4j.Logger;
 import com.dlz.framework.util.JacksonUtil;
 @Service
 public class DaoOperatorSpringJdbc implements IDaoOperator {
@@ -25,12 +24,6 @@ public class DaoOperatorSpringJdbc implements IDaoOperator {
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(DaoOperatorSpringJdbc.class);
 	private JdbcTemplate jdbcTemplate;
 	private ResultSetExtractor<List<ResultMap>> extractor;
-	
-	ISequenceMaker sequenceMaker;
-	
-	public void setSequenceMaker(ISequenceMaker sequenceMaker){
-		this.sequenceMaker=sequenceMaker;
-	}
 	
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -45,9 +38,6 @@ public class DaoOperatorSpringJdbc implements IDaoOperator {
 
 	@Override
 	public long getSeq(String seqName) {
-		if (sequenceMaker != null) {
-			return sequenceMaker.nextVal(seqName);
-		}
 		seqName = seqName.toUpperCase();
 		String sql = "select SEQ_" + seqName + ".nextval from dual";
 

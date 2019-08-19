@@ -22,7 +22,22 @@ public class DbCoverUtil {
 			return paraCover;
 		}
 		paraCover=SpringHolder.getBean(ATableCloumnCache.class);
+		if(paraCover==null){
+			paraCover = new ATableCloumnCache("none"){
+				@Override
+				public Object converObj4Db(String tableName, String clumnName, Object value) {
+					return value;
+				}
+				@Override
+				public boolean isClumnExists(String tableName, String clumnName) {
+					return true;
+				}
+			};
+		}
 		return paraCover;
+	}
+	public static void setTableCloumnCache(ATableCloumnCache paraCover){
+		DbCoverUtil.paraCover=paraCover;
 	}
 	/**
 	 * 把传入的参数转换成数据库识别的参数

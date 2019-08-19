@@ -3,10 +3,12 @@ package com.dlz.framework.db.cache;
 import java.util.Map;
 
 import com.dlz.framework.cache.AbstractCache;
+import com.dlz.framework.db.DbCoverUtil;
 
 public abstract class ATableCloumnCache extends AbstractCache<String, Map<String, Integer>> {
 	public ATableCloumnCache(String cacheName) {
 		super(cacheName);
+		DbCoverUtil.setTableCloumnCache(this);
 	}
 	/**
 	 * 取得字段对应的类型

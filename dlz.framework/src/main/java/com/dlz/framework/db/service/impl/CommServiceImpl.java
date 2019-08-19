@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
@@ -22,8 +23,8 @@ import com.dlz.framework.db.modal.InsertParaMap;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.db.modal.UpdateParaMap;
+import com.dlz.framework.db.mySequence.ISequenceMaker;
 import com.dlz.framework.db.service.ICommService;
-import org.slf4j.Logger;
 import com.dlz.framework.util.JacksonUtil;
 import com.dlz.framework.util.ValUtil;
 
@@ -36,8 +37,12 @@ public class CommServiceImpl implements ICommService {
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(CommServiceImpl.class);
 	@Autowired
 	private IDaoOperator daoOperator;
+	
 	@Autowired
 	private DbOprationCache dbOprationCache;
+	
+	@Autowired(required = false)
+	ISequenceMaker sequenceMaker;
 	
 	@Override
 	public int excuteSql(BaseParaMap paraMap) {
@@ -60,6 +65,9 @@ public class CommServiceImpl implements ICommService {
 	}
 	@Override
 	public long getSeq(String seqName) {
+		if (sequenceMaker != null) {
+			return sequenceMaker.nextVal(seqName);
+		}
 		return daoOperator.getSeq(seqName);
 	}
 	

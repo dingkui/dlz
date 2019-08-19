@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+
 import com.dlz.framework.bean.JSONMap;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.exception.DbException;
@@ -19,8 +21,6 @@ import com.dlz.framework.db.modal.ParaMap;
 import com.dlz.framework.db.service.IColumnMapperService;
 import com.dlz.framework.db.service.impl.ColumnMapperToLower;
 import com.dlz.framework.exception.CodeException;
-import org.slf4j.Logger;
-import com.dlz.framework.util.DateUtil;
 import com.dlz.framework.util.JacksonUtil;
 import com.dlz.framework.util.StringUtils;
 import com.dlz.framework.util.ValUtil;
@@ -76,7 +76,7 @@ public class SqlUtil{
 	}
 	
 	private static JSONMap getParaMap(Object para){
-		return JacksonUtil.coverObj(para,JSONMap.class);
+		return new JSONMap(para);
 	}
 	/**
 	 * 转换参数
