@@ -35,6 +35,7 @@ import com.dlz.framework.util.ValUtil;
 public class CommServiceImpl implements ICommService {
 	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static Logger logger = org.slf4j.LoggerFactory.getLogger(CommServiceImpl.class);
+	
 	@Autowired
 	private IDaoOperator daoOperator;
 	

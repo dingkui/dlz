@@ -9,24 +9,7 @@
 	<artifactId>dlz.framework</artifactId>
 	<packaging>jar</packaging>
 
-	<!-- 使用阿里 maven 库 -->
 	<dependencies>
-		<!-- jdbc/ojdbc14-1.0.jar -->
-		<dependency>
-			<groupId>comlib.jdbc</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<!-- logs -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

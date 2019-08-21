@@ -1,4 +1,4 @@
-package com.dlz.framework.db.datasource;
+package com.dlz.framework.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +23,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import com.dlz.framework.db.DbInfo;
+import com.dlz.framework.db.rowMapper.MySqlColumnMapRowMapper;
+import com.dlz.framework.db.rowMapper.OracleColumnMapRowMapper;
+
 
 /**
  * 覆写jdbctemlate ，使用LowerCaseColumnMapRowMapper
@@ -33,17 +37,18 @@ import org.springframework.util.Assert;
  */
 @Component
 @Lazy
-public class LowerCaseJdbcTemplate extends JdbcTemplate {
+public class MyJdbcTemplate extends JdbcTemplate {
 	protected final Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected RowMapper getColumnMapRowMapper() {
-//		if("2".equals(EopSetting.DBTYPE)){
-//			return new OracleColumnMapRowMapper();
-//		}else if("1".equals(EopSetting.DBTYPE)){
-//			return new MySqlColumnMapRowMapper();
-//		}else{
+		if("".equalsIgnoreCase(DbInfo.getDbtype())){
+			return new OracleColumnMapRowMapper();
+		}else if("mysql".equalsIgnoreCase(DbInfo.getDbtype()) || "postgresql".equalsIgnoreCase(DbInfo.getDbtype())){
+			return new MySqlColumnMapRowMapper();
+		}else{
 			return new ColumnMapRowMapper();
-//		}
+		}
 	}
 	
 	@Override
