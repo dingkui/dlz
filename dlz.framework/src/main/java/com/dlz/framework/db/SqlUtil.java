@@ -142,12 +142,13 @@ public class SqlUtil{
 	 * @throws Exception
 	 */
 	public static BaseParaMap getParmMap(String sql,Object... para){
-		ParaMap paraMap = new ParaMap(null);
 		if("1".equals(DbInfo.getDbset("run.jdbc"))){
+			ParaMap paraMap = new ParaMap(null);
 			paraMap.setSqlJdbc(sql);
 			paraMap.setSqlJdbcPara(para);
 			return paraMap;
 		}
+		ParaMap paraMap = new ParaMap(sql);
 		if(para.length<1){
 			return paraMap;
 		}
