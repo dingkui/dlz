@@ -165,11 +165,8 @@ public class FunOptController {
 	@RequestMapping(value = "delFreCheck/{funOptId}")
 	public boolean delFreCheck(@PathVariable("funOptId") Long funOptId) {
 		try {
-			String sql="begin delete from T_P_FUN_OPT where FUN_OPT_ID = #{id}; ";
-			sql+="delete from t_p_role_fun_opt where FUN_OPT_ID = #{id}; end;";
-			ParaMap pm = new ParaMap(sql);
-			pm.addPara("id", funOptId);
-			commService.excuteSql(pm);
+			commService.excuteSql("delete from t_p_role_fun_opt where FUN_OPT_ID = ?", funOptId);
+			commService.excuteSql("delete from T_P_FUN_OPT where FUN_OPT_ID = ?", funOptId);
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
