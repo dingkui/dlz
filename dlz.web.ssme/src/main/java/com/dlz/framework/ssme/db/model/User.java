@@ -52,7 +52,7 @@ public class User extends BaseModel {
      * T_P_USER.phone
      * 手机号码
      */
-    private String phone;
+    private String phone;                
 
     public String getPhone(){ return phone;}
 
