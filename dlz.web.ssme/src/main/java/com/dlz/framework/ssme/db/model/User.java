@@ -48,7 +48,17 @@ public class User extends BaseModel {
      * 用户状态
      */
     private String userStatus;
+    /**
+     * T_P_USER.phone
+     * 手机号码
+     */
+    private String phone;
 
+    public String getPhone(){ return phone;}
+
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
     /**
      * T_P_USER.USER_ID
      * 用户编号

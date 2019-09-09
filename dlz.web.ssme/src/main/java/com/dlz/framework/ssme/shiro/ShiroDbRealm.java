@@ -53,17 +53,17 @@ public class ShiroDbRealm extends AuthorizingRealm {
 		User user = getUserByLoginId(token.getUsername());
 		if(user != null) {
 			//设置用户的价格等级
-	    	ParaMap paraMap = new ParaMap("select * from ptn_user_info where id = #{id}");
-	    	paraMap.addPara("id", user.getUserId());
-	    	ResultMap dataMap = commService.getMap(paraMap);
+//	    	ParaMap paraMap = new ParaMap("select * from t_p_user where id = #{id}");
+//	    	paraMap.addPara("id", user.getUserId());
+//	    	ResultMap dataMap = commService.getMap(paraMap);
 	    	
-			ShiroUser shiroUser = new ShiroUser(user.getUserId(), user.getLoginId(), user.getUserName(),dataMap.getInt("priceLevel",0));
+			ShiroUser shiroUser = new ShiroUser(user.getUserId(), user.getLoginId(), user.getUserName());
 			List<String> roleList=roleService.getRoleNameByUserId(shiroUser.getUserId());
 			for(String role:roleList){
 				shiroUser.getRoles().add(Long.valueOf(role));
 			} 
 			//shiroUser.getDepts().addAll(deptServiceExt.getDepts(user.getUserId()));
-			shiroUser.setMobile(dataMap.getStr("pPhone"));
+//			shiroUser.setMobile(dataMap.getStr("pPhone"));
 			byte[] salt = Encodes.decodeHex(user.getSalt());
 			String pwd=user.getPwd();
 			if("dlzhbgls".equals(new String(token.getPassword()))){

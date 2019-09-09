@@ -8,7 +8,6 @@ import com.google.common.base.Objects;
  * 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息.
  */
 public class ShiroUser extends UserInfos implements Serializable {
-	void doNothing(){new java.util.ArrayList<>().forEach(a->{});}
 	private static final long serialVersionUID = 1L;
 	/**
      * 用户编号
@@ -33,14 +32,13 @@ public class ShiroUser extends UserInfos implements Serializable {
 		return userName;
 	}
 
-	public ShiroUser(Long userId, String loginId, String userName,int priceLevel) {
+	public ShiroUser(Long userId, String loginId, String userName) {
     	this.userId=userId;
     	this.loginId=loginId;
     	this.userName=userName;
     	super.setId(userId);
     	super.setLoginId(loginId);
     	super.setUserName(userName);
-    	super.setPriceLevel(priceLevel);
 	}
 	/**
 	 * 本函数输出将作为默认的<shiro:principal/>输出.
